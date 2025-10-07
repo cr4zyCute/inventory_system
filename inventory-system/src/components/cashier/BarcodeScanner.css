@@ -1,0 +1,135 @@
+.barcode-scanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.scanner-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.scanner-header h3 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 1.5rem;
+}
+
+.scanner-header p {
+  color: #6c757d;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.scanner-error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #f5c6cb;
+  width: 100%;
+  max-width: 400px;
+}
+
+.scanner-error p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.scanner-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Override html5-qrcode default styles for better mobile experience */
+.scanner-container video {
+  border-radius: 8px;
+}
+
+.scanner-container canvas {
+  border-radius: 8px;
+}
+
+.scanner-instructions {
+  background: #e3f2fd;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #2196f3;
+  max-width: 400px;
+  width: 100%;
+}
+
+.scanner-instructions p {
+  margin: 0 0 10px 0;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+.scanner-instructions ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #424242;
+}
+
+.scanner-instructions li {
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .barcode-scanner {
+    padding: 15px;
+    margin: 10px;
+  }
+  
+  .scanner-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .scanner-container {
+    width: 100%;
+  }
+  
+  .scanner-instructions {
+    font-size: 0.85rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .barcode-scanner {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+  
+  .scanner-header h3 {
+    color: #e2e8f0;
+  }
+  
+  .scanner-header p {
+    color: #a0aec0;
+  }
+  
+  .scanner-instructions {
+    background: #2a4a6b;
+    color: #e2e8f0;
+  }
+  
+  .scanner-instructions p {
+    color: #90cdf4;
+  }
+  
+  .scanner-instructions ul {
+    color: #cbd5e0;
+  }
+}

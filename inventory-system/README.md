@@ -1,75 +1,109 @@
-# React + TypeScript + Vite
+# 🏪 Inventory Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern point-of-sale and inventory management system built with React, TypeScript, and Vite. Features a mobile-friendly barcode scanner that works over the network using your phone's camera.
 
-Currently, two official plugins are available:
+## 📱 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Mobile Barcode Scanner**: Scan barcodes using your phone camera over the network
+- **Real-time Cart Management**: Add, remove, and modify items in the shopping cart
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Modern UI**: Beautiful, intuitive interface with smooth animations
+- **TypeScript Support**: Full type safety and better development experience
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Note: This will impact Vite dev & build performances.
+2. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-## Expanding the ESLint configuration
+3. **Open your browser** and navigate to the local development URL (usually `http://localhost:5173`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+4. **Access from mobile**: Use your phone's browser to visit the same URL on your network
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📱 Using the Barcode Scanner
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Desktop Setup:
+1. Click "Open Cashier System" from the home page
+2. Click "Start Scanner" to activate the barcode scanner
+3. The scanner will attempt to use your computer's camera
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Mobile Setup (Recommended):
+1. Ensure your phone and computer are on the same network
+2. Open your phone's browser and navigate to your development server URL
+3. Click "Open Cashier System"
+4. Click "Start Scanner" - your phone will request camera permissions
+5. Allow camera access when prompted
+6. Point your phone camera at barcodes to scan them
+
+### Scanner Features:
+- **Auto-focus**: The scanner automatically focuses on barcodes
+- **Torch support**: Use the flashlight button for low-light scanning
+- **Zoom controls**: Adjust zoom for better scanning
+- **Multiple format support**: Supports various barcode formats (UPC, EAN, Code128, etc.)
+
+## 🛠 Technical Details
+
+### Dependencies:
+- **html5-qrcode**: Powers the barcode scanning functionality
+- **React 19**: Latest React with concurrent features
+- **TypeScript**: Full type safety
+- **Vite**: Fast development and build tool
+
+### Browser Compatibility:
+- **Chrome/Edge**: Full support with all features
+- **Safari**: Full support on iOS 11+
+- **Firefox**: Full support with camera permissions
+
+### Network Requirements:
+- Both devices must be on the same local network
+- HTTPS is required for camera access in production
+- For development, localhost works fine
+
+## 🔧 Development
+
+### Available Scripts:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+### Project Structure:
+```
+src/
+├── components/
+│   └── cashier/
+│       ├── BarcodeScanner.tsx    # Main scanner component
+│       ├── BarcodeScanner.css    # Scanner styles
+│       ├── CashierPage.tsx       # Cashier interface
+│       ├── CashierPage.css       # Cashier styles
+│       ├── types.ts              # TypeScript definitions
+│       └── index.ts              # Export barrel
+├── App.tsx                       # Main app component
+├── App.css                       # App styles
+└── main.tsx                      # App entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Adding Products:
+Currently uses mock data. To add real products, modify the `mockProducts` array in `CashierPage.tsx` or integrate with your backend API.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Customization:
+- **Scanner settings**: Modify `config` object in `BarcodeScanner.tsx`
+- **Styling**: Update CSS files for custom themes
+- **Product data**: Replace mock data with API calls
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📝 Notes
+
+- The scanner works best with good lighting conditions
+- For production deployment, ensure HTTPS is configured for camera access
+- Test barcode formats: `1234567890123`, `9876543210987`, `5555555555555`
+- Mobile browsers may require user interaction before camera access
+
+## 🤝 Contributing
+
+Feel free to submit issues and enhancement requests!
