@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { QueryProvider } from './providers/QueryProvider'
 import { LoginPage } from './components/auth'
 import { AdminDashboard } from './components/admin'
 import { ManagerDashboard } from './components/manager'
@@ -39,9 +40,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </QueryProvider>
   )
 }
 

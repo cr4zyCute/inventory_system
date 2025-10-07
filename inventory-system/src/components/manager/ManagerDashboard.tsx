@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
+import Reports from '../shared/report';
 import './ManagerDashboard.css';
 
 export function ManagerDashboard() {
@@ -8,26 +9,26 @@ export function ManagerDashboard() {
   const [activeSection, setActiveSection] = useState('dashboard');
 
   const businessStats = [
-    { title: 'Daily Sales', value: '$2,847', icon: 'bi-currency-dollar', trend: '+12%', color: '#059669' },
+    { title: 'Daily Sales', value: '₱2,847', icon: 'bi-currency-dollar', trend: '+12%', color: '#059669' },
     { title: 'Total Orders', value: '156', icon: 'bi-clipboard-data', trend: '+8%', color: '#3b82f6' },
-    { title: 'Inventory Value', value: '$45,230', icon: 'bi-boxes', trend: '-2%', color: '#f59e0b' },
+    { title: 'Inventory Value', value: '₱45,230', icon: 'bi-boxes', trend: '-2%', color: '#f59e0b' },
     { title: 'Staff on Duty', value: '8', icon: 'bi-people', trend: '0%', color: '#8b5cf6' }
   ];
 
   const topProducts = [
-    { name: 'Premium Coffee Beans', sold: 45, revenue: '$675', stock: 23 },
-    { name: 'Organic Milk', sold: 38, revenue: '$152', stock: 67 },
-    { name: 'Fresh Bread', sold: 32, revenue: '$96', stock: 15 },
-    { name: 'Energy Drinks', sold: 28, revenue: '$140', stock: 42 },
-    { name: 'Snack Mix', sold: 25, revenue: '$75', stock: 38 }
+    { name: 'Premium Coffee Beans', sold: 45, revenue: '₱675', stock: 23 },
+    { name: 'Organic Milk', sold: 38, revenue: '₱152', stock: 67 },
+    { name: 'Fresh Bread', sold: 32, revenue: '₱96', stock: 15 },
+    { name: 'Energy Drinks', sold: 28, revenue: '₱140', stock: 42 },
+    { name: 'Snack Mix', sold: 25, revenue: '₱75', stock: 38 }
   ];
 
   const recentOrders = [
-    { id: '#1234', customer: 'John Smith', amount: '$45.60', status: 'completed', time: '10 min ago' },
-    { id: '#1235', customer: 'Sarah Johnson', amount: '$23.40', status: 'processing', time: '15 min ago' },
-    { id: '#1236', customer: 'Mike Wilson', amount: '$67.80', status: 'completed', time: '22 min ago' },
-    { id: '#1237', customer: 'Emma Davis', amount: '$12.30', status: 'pending', time: '28 min ago' },
-    { id: '#1238', customer: 'Tom Brown', amount: '$89.50', status: 'completed', time: '35 min ago' }
+    { id: '#1234', customer: 'John Smith', amount: '₱45.60', status: 'completed', time: '10 min ago' },
+    { id: '#1235', customer: 'Sarah Johnson', amount: '₱23.40', status: 'processing', time: '15 min ago' },
+    { id: '#1236', customer: 'Mike Wilson', amount: '₱67.80', status: 'completed', time: '22 min ago' },
+    { id: '#1237', customer: 'Emma Davis', amount: '₱12.30', status: 'pending', time: '28 min ago' },
+    { id: '#1238', customer: 'Tom Brown', amount: '₱89.50', status: 'completed', time: '35 min ago' }
   ];
 
   const managementActions = [
@@ -139,15 +140,7 @@ export function ManagerDashboard() {
           </section>
         );
       case 'reports':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-graph-up"></i> Reports & Analytics</h2>
-            <p>View comprehensive sales reports, analytics, and business insights.</p>
-            <div className="placeholder-content">
-              <p>Reports and analytics interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <Reports />;
       case 'staff':
         return (
           <section className="content-section">

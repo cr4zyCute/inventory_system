@@ -5,10 +5,10 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  username: string;
-  role: 'ADMIN' | 'MANAGER' | 'CASHIER';
+  role: string;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
   lastLogin?: string;
 }
 
@@ -29,9 +29,8 @@ const UserForm: React.FC<UserFormProps> = ({
     firstName: '',
     lastName: '',
     email: '',
-    username: '',
     password: '',
-    role: 'CASHIER' as 'ADMIN' | 'MANAGER' | 'CASHIER',
+    role: 'cashier',
     isActive: true
   });
 
@@ -44,7 +43,6 @@ const UserForm: React.FC<UserFormProps> = ({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        username: user.username,
         password: '', // Don't pre-fill password for security
         role: user.role,
         isActive: user.isActive
@@ -55,9 +53,8 @@ const UserForm: React.FC<UserFormProps> = ({
         firstName: '',
         lastName: '',
         email: '',
-        username: '',
         password: '',
-        role: 'CASHIER',
+        role: 'cashier',
         isActive: true
       });
     }
@@ -78,11 +75,6 @@ const UserForm: React.FC<UserFormProps> = ({
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
-    }
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
     }
     
     // Password validation (only for new users or if password is provided)
@@ -207,22 +199,6 @@ const UserForm: React.FC<UserFormProps> = ({
               {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
 
-            <div className="form-group">
-              <label htmlFor="username" className="form-label">
-                Username <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className={`form-input ${errors.username ? 'error' : ''}`}
-                placeholder="Enter username"
-                disabled={isSubmitting}
-              />
-              {errors.username && <span className="error-message">{errors.username}</span>}
-            </div>
           </div>
 
           <div className="form-row">

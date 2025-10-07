@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import BarcodeScanner from './BarcodeScanner';
+import Reports from '../shared/report';
 import './BarcodeScanner.css';
 import './CashierPage.css';
 
@@ -152,7 +153,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
     }
     
     // Here you would integrate with your payment system
-    alert(`Processing payment for $${total.toFixed(2)}`);
+    alert(`Processing payment for ₱${total.toFixed(2)}`);
     clearCart();
     setScanMessage('Transaction completed successfully');
   };
@@ -245,7 +246,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
                       <div className="item-info">
                         <h4>{item.name}</h4>
                         <p className="barcode">Barcode: {item.barcode}</p>
-                        <p className="price">${item.price.toFixed(2)} each</p>
+                        <p className="price">₱{item.price.toFixed(2)} each</p>
                       </div>
                       <div className="item-controls">
                         <div className="quantity-controls">
@@ -264,7 +265,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
                           </button>
                         </div>
                         <div className="item-total">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₱{(item.price * item.quantity).toFixed(2)}
                         </div>
                         <button 
                           onClick={() => removeItem(item.id)}
@@ -280,7 +281,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
 
               <div className="cart-footer">
                 <div className="total-section">
-                  <h3>Total: ${total.toFixed(2)}</h3>
+                  <h3>Total: ₱{total.toFixed(2)}</h3>
                 </div>
                 <button 
                   onClick={processCheckout}
@@ -323,6 +324,8 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
             </div>
           </section>
         );
+      case 'reports':
+        return <Reports />;
       default:
         return (
           <section className="content-section">

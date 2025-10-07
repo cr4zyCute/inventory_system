@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import './Sidebar.css';
+import './css/Sidebar.css';
 
 interface MenuItem {
   id: string;

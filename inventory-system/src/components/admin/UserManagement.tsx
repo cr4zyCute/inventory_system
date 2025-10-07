@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import './css/usermanagement.css';
-import './css/userform.css';
 import UserForm from './UserForm';
+import Toast from '../shared/Toast';
+import { TableSkeleton, Skeleton } from '../common/skeletonLoading';
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser, useUpdateUserStatus } from '../../hooks/useUsers';
+import './css/usermanagement.css';
 
 interface User {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  username: string;
-  role: 'ADMIN' | 'MANAGER' | 'CASHIER';
+  role: string;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
   lastLogin?: string;
 }
 
 const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // TanStack Query hooks
+  const { data: users = [], isLoading, error: queryError } = useUsers();
+  const createUserMutation = useCreateUser();
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
+  const updateStatusMutation = useUpdateUserStatus();
+
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [roleFilter, setRoleFilter] = useState<string>('ALL');
@@ -30,43 +37,16 @@ const UserManagement: React.FC = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [dropdownPosition, setDropdownPosition] = useState<{ top: number; right: number } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
 
-  // API configuration - use relative URL for Vite proxy
-  const API_BASE_URL = '';
-
-  // Fetch users from backend
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch(`${API_BASE_URL}/api/users`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // Remove Authorization header for now since you're using mock auth
-          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setUsers(data.data || data || []);
-    } catch (err: any) {
-      console.error('Error fetching users:', err);
-      setError('Failed to fetch users. Please check if the backend is running.');
-      setUsers([]); // Set empty array on error
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handle query error
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (queryError) {
+      setError('Failed to fetch users. Please check if the backend is running.');
+    } else {
+      setError(null);
+    }
+  }, [queryError]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -102,65 +82,37 @@ const UserManagement: React.FC = () => {
 
   const handleToggleStatus = async (user: User) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/${user.id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          // Remove Authorization header for now since you're using mock auth
-          // 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({ isActive: !user.isActive }),
+      await updateStatusMutation.mutateAsync({
+        id: user.id,
+        isActive: !user.isActive
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      // Update local state
-      setUsers(prevUsers => 
-        prevUsers.map(u => 
-          u.id === user.id ? { ...u, isActive: !u.isActive } : u
-        )
-      );
+      
+      setToast({
+        message: `User "${user.firstName} ${user.lastName}" ${user.isActive ? 'deactivated' : 'activated'} successfully!`,
+        type: 'success'
+      });
     } catch (err: any) {
       console.error('Error updating user status:', err);
-      setError('Failed to update user status. Please try again.');
     }
   };
 
   const handleUserSubmit = async (userData: any) => {
     try {
-      const url = isEditing 
-        ? `${API_BASE_URL}/api/users/${selectedUser?.id}`
-        : `${API_BASE_URL}/api/users`;
-      
-      const method = isEditing ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      
-      if (isEditing) {
-        // Update existing user in local state
-        setUsers(prevUsers => 
-          prevUsers.map(u => 
-            u.id === selectedUser?.id ? result.data : u
-          )
-        );
+      if (isEditing && selectedUser) {
+        await updateUserMutation.mutateAsync({
+          id: selectedUser.id,
+          data: userData
+        });
+        setToast({
+          message: `User "${userData.firstName} ${userData.lastName}" updated successfully!`,
+          type: 'success'
+        });
       } else {
-        // Add new user to local state
-        setUsers(prevUsers => [result.data, ...prevUsers]);
+        await createUserMutation.mutateAsync(userData);
+        setToast({
+          message: `User "${userData.firstName} ${userData.lastName}" created successfully!`,
+          type: 'success'
+        });
       }
       
       setShowUserModal(false);
@@ -176,20 +128,11 @@ const UserManagement: React.FC = () => {
     if (!selectedUser) return;
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/${selectedUser.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      await deleteUserMutation.mutateAsync(selectedUser.id);
+      setToast({
+        message: `User "${selectedUser.firstName} ${selectedUser.lastName}" deleted successfully!`,
+        type: 'success'
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Update local state
-      setUsers(prevUsers => prevUsers.filter(u => u.id !== selectedUser?.id));
       setShowDeleteModal(false);
       setSelectedUser(null);
       setError(null);
@@ -208,7 +151,6 @@ const UserManagement: React.FC = () => {
       user.firstName.toLowerCase().includes(searchLower) ||
       user.lastName.toLowerCase().includes(searchLower) ||
       user.email.toLowerCase().includes(searchLower) ||
-      user.username.toLowerCase().includes(searchLower) ||
       `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchLower) ||
       user.role.toLowerCase().includes(searchLower) ||
       (user.isActive ? 'active' : 'inactive').includes(searchLower);
@@ -266,11 +208,39 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="loading-container">
-        <i className="bi-arrow-repeat loading-spinner"></i>
-        <p>Loading users...</p>
+      <div className="user-management-container">
+        {/* Header */}
+        <div className="user-management-header">
+          <div>
+            <h2 className="user-management-title">
+              <i className="bi-people"></i> User Management
+            </h2>
+            <p className="user-management-subtitle">Manage users, roles, and permissions</p>
+          </div>
+          <button className="add-user-button" disabled>
+            <i className="bi-plus-circle"></i>
+            Add New User
+          </button>
+        </div>
+
+        {/* Controls Skeleton */}
+        <div className="controls-container">
+          <Skeleton width="130px" height="40px" variant="rounded" animation="shimmer" />
+          <Skeleton width="130px" height="40px" variant="rounded" animation="shimmer" />
+          <Skeleton width="320px" height="40px" variant="rounded" animation="shimmer" />
+        </div>
+
+        {/* Table Skeleton */}
+        <TableSkeleton 
+          rows={8} 
+          columns={5} 
+          variant="users"
+          animation="shimmer"
+          showAvatar={true}
+          showActions={true}
+        />
       </div>
     );
   }
@@ -335,7 +305,7 @@ const UserManagement: React.FC = () => {
           <i className="bi-search search-icon"></i>
           <input
             type="text"
-            placeholder="Search by name, email, username, role, or status..."
+            placeholder="Search by name, email, role, or status..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -363,7 +333,6 @@ const UserManagement: React.FC = () => {
             <tr className="table-header">
               <th className="table-header-cell">User</th>
               <th className="table-header-cell">Email</th>
-              <th className="table-header-cell">Username</th>
               <th className="table-header-cell">Role</th>
               <th className="table-header-cell">Status</th>
               <th className="table-header-cell">Last Login</th>
@@ -373,7 +342,7 @@ const UserManagement: React.FC = () => {
           <tbody>
             {currentUsers.length === 0 ? (
               <tr>
-                <td colSpan={7} className="empty-state">
+                <td colSpan={6} className="empty-state">
                   <i className="bi-inbox empty-state-icon"></i>
                   <span>
                     {users.length === 0 
@@ -385,7 +354,7 @@ const UserManagement: React.FC = () => {
                     <div className="retry-info">
                       <p>Expected API endpoint: <code>GET /api/users</code></p>
                       <button 
-                        onClick={fetchUsers}
+                        onClick={() => window.location.reload()}
                         className="retry-button"
                       >
                         Retry
@@ -408,7 +377,6 @@ const UserManagement: React.FC = () => {
                     </div>
                   </td>
                   <td className="table-cell">{user.email}</td>
-                  <td className="table-cell">{user.username}</td>
                   <td className="table-cell">
                     <span className={getRoleBadgeClass(user.role)}>
                       {user.role}
@@ -558,6 +526,15 @@ const UserManagement: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );
