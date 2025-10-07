@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
   padding: 20px;
 }
 
@@ -79,7 +79,7 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #000000;
 }
 
 .form-group input:disabled {
@@ -99,20 +99,22 @@
 
 .login-button {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #000000;
+  color: white;
+  border: 2px solid #000000;
+  padding: 12px 24px;
+  border-radius: 8px;
 }
 
 .login-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .login-button:disabled {
@@ -120,6 +122,8 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  background: #666666;
+  border-color: #666666;
 }
 
 .demo-credentials {

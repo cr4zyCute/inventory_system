@@ -6,7 +6,7 @@
 
 .app-home {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,31 +60,88 @@
 }
 
 .feature-card p {
-  color: #666;
   margin-bottom: 25px;
   line-height: 1.6;
 }
 
-.feature-btn {
-  background: linear-gradient(45deg, #4CAF50, #45a049);
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  color: #213547;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+/* Loading Spinner Styles */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+}
+
+.loading-spinner {
+  text-align: center;
   color: white;
-  border: none;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  margin: 0 auto 20px auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.feature-btn {
+  background: #000000;
+  color: white;
+  border: 2px solid #ffffff;
   padding: 12px 24px;
   font-size: 1rem;
   border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .feature-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .feature-btn:disabled {
-  background: #cccccc;
+  background: #666666;
+  color: #cccccc;
+  border-color: #666666;
   cursor: not-allowed;
   box-shadow: none;
   transform: none;

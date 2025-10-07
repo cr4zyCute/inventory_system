@@ -41,7 +41,7 @@ export function LoginPage() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>🏪 Inventory System</h1>
+          <h1><i className="bi-shop"></i> Inventory System</h1>
           <h2>Sign In</h2>
           <p>Enter your credentials to access the system</p>
         </div>

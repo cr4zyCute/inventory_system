@@ -6,7 +6,19 @@ import { CashierPage } from './components/cashier'
 import './App.css'
 
 function AppContent() {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user, isLoading } = useAuth()
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!isAuthenticated) {
     return <LoginPage />

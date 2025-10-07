@@ -118,7 +118,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       />
       
       <div className="scanner-instructions">
-        <p>📱 <strong>Mobile Tips:</strong></p>
+        <p><i className="bi-phone"></i> <strong>Mobile Tips:</strong></p>
         <ul>
           <li>Hold your phone steady</li>
           <li>Ensure good lighting</li>
