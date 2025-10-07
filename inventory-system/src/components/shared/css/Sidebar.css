@@ -64,6 +64,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  color: wheat;
 }
 
 .user-avatar {
@@ -91,6 +92,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: whitesmoke;
 }
 
 .user-role {

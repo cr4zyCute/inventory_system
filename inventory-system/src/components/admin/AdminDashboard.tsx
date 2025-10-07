@@ -1,16 +1,12 @@
 import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import UserManagement from './UserManagement';
 import ProductManagement from './ProductManagement';
 import Reports from '../shared/report';
-import { DashboardSkeleton } from '../common/skeletonLoading';
 import './css/AdminDashboard.css';
 
 export function AdminDashboard() {
-  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [isLoading, setIsLoading] = useState(false);
 
   const adminStats = [
     { title: 'Total Users', value: '24', icon: 'bi-people', color: '#4f46e5' },
@@ -41,9 +37,6 @@ export function AdminDashboard() {
   };
 
   const renderContent = () => {
-    if (isLoading && activeSection === 'dashboard') {
-      return <DashboardSkeleton />;
-    }
 
     switch (activeSection) {
       case 'dashboard':

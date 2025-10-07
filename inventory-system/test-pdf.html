@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jsPDF Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <h1>jsPDF Test</h1>
+    <button onclick="generatePDF()">Generate Test PDF</button>
+
+    <script>
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(79, 70, 229);
+            doc.text('Test Report', 20, 30);
+            
+            // Add content
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is a test PDF generated with jsPDF', 20, 50);
+            doc.text('Date: ' + new Date().toLocaleDateString(), 20, 70);
+            
+            // Save the PDF
+            doc.save('test-report.pdf');
+        }
+    </script>
+</body>
+</html>

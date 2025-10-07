@@ -1,47 +1,111 @@
-import { Controller, Post, Body, Res, HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
-import * as puppeteer from 'puppeteer';
+import { Controller, Post, Body, HttpException, HttpStatus, Get, Query, Param } from '@nestjs/common';
+import { ReportsService } from './reports.service';
 
 @Controller('api/reports')
 export class ReportsController {
+  constructor(private readonly reportsService: ReportsService) {}
+
+  @Get('sales-summary')
+  async getSalesReport(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    try {
+      if (!startDate || !endDate) {
+        throw new HttpException('Start date and end date are required', HttpStatus.BAD_REQUEST);
+      }
+      
+      const reportData = await this.reportsService.getSalesReport(startDate, endDate);
+      return {
+        success: true,
+        data: reportData,
+      };
+    } catch (error) {
+      console.error('Sales report error:', error);
+      throw new HttpException('Failed to generate sales report', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('inventory-overview')
+  async getInventoryReport() {
+    try {
+      const reportData = await this.reportsService.getInventoryReport();
+      return {
+        success: true,
+        data: reportData,
+      };
+    } catch (error) {
+      console.error('Inventory report error:', error);
+      throw new HttpException('Failed to generate inventory report', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('my-sales/:userId')
+  async getUserSalesReport(
+    @Param('userId') userId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    try {
+      if (!startDate || !endDate) {
+        throw new HttpException('Start date and end date are required', HttpStatus.BAD_REQUEST);
+      }
+      
+      const reportData = await this.reportsService.getUserSalesReport(userId, startDate, endDate);
+      return {
+        success: true,
+        data: reportData,
+      };
+    } catch (error) {
+      console.error('User sales report error:', error);
+      throw new HttpException('Failed to generate user sales report', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('daily-transactions')
+  async getDailyTransactionsReport(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    try {
+      if (!startDate || !endDate) {
+        throw new HttpException('Start date and end date are required', HttpStatus.BAD_REQUEST);
+      }
+      
+      const reportData = await this.reportsService.getDailyTransactionsReport(startDate, endDate);
+      return {
+        success: true,
+        data: reportData,
+      };
+    } catch (error) {
+      console.error('Daily transactions report error:', error);
+      throw new HttpException('Failed to generate daily transactions report', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('dashboard-analytics')
+  async getDashboardAnalytics() {
+    try {
+      const analyticsData = await this.reportsService.getDashboardAnalytics();
+      return {
+        success: true,
+        data: analyticsData,
+      };
+    } catch (error) {
+      console.error('Dashboard analytics error:', error);
+      throw new HttpException('Failed to get dashboard analytics', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   
   @Post('generate-pdf')
-  async generatePDF(@Body() reportData: any, @Res() res: Response) {
+  async generatePDF(@Body() reportData: any) {
     try {
-      // Generate HTML content from report data
-      const htmlContent = this.generateReportHTML(reportData);
-      
-      // Launch puppeteer to generate PDF
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
-      
-      const page = await browser.newPage();
-      await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-      
-      // Generate PDF buffer
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '20mm',
-          right: '20mm',
-          bottom: '20mm',
-          left: '20mm'
-        }
-      });
-      
-      await browser.close();
-      
-      // Set response headers for PDF download
-      res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${reportData.reportName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf"`,
-        'Content-Length': pdfBuffer.length,
-      });
-      
-      res.send(pdfBuffer);
+      // Server-side PDF generation is not implemented
+      // The frontend handles PDF generation using jsPDF
+      throw new HttpException(
+        'Server-side PDF generation not available. Use client-side generation.', 
+        HttpStatus.NOT_IMPLEMENTED
+      );
       
     } catch (error) {
       console.error('PDF generation error:', error);
