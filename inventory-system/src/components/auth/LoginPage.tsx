@@ -90,20 +90,6 @@ export function LoginPage() {
           </button>
         </form>
 
-        <div className="demo-credentials">
-          <h3>Demo Credentials:</h3>
-          <div className="credentials-grid">
-            <div className="credential-item">
-              <strong>Admin:</strong> admin@gmail.com / admin
-            </div>
-            <div className="credential-item">
-              <strong>Manager:</strong> manager@gmail.com / manager
-            </div>
-            <div className="credential-item">
-              <strong>Cashier:</strong> cashier@gmail.com / cashier
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
-import './AdminDashboard.css';
+import UserManagement from './UserManagement';
+import './css/AdminDashboard.css';
 
 export function AdminDashboard() {
   const { user } = useAuth();
@@ -99,15 +100,7 @@ export function AdminDashboard() {
           </>
         );
       case 'users':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-people"></i> User Management</h2>
-            <p>Manage system users, roles, and permissions.</p>
-            <div className="placeholder-content">
-              <p>User management interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <UserManagement />;
       case 'system':
         return (
           <section className="content-section">
@@ -155,14 +148,7 @@ export function AdminDashboard() {
         onItemClick={handleSidebarItemClick}
       />
       <div className="dashboard-content">
-        <header className="dashboard-header">
-          <div className="header-content">
-            <div className="welcome-section">
-              <h1>Admin Dashboard</h1>
-              <p>Welcome back, <strong>{user?.firstName} {user?.lastName}</strong></p>
-            </div>
-          </div>
-        </header>
+
 
         <main className="dashboard-main">
           {renderContent()}

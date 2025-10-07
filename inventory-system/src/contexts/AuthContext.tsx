@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthState, LoginCredentials } from '../types/auth';
-import { MOCK_USERS } from '../types/auth';
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<boolean>;
@@ -89,28 +88,42 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [authState, isLoading]);
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const userRecord = MOCK_USERS[credentials.email];
-    
-    if (userRecord && userRecord.password === credentials.password) {
-      // Update last login time
-      const updatedUser = {
-        ...userRecord.user,
-        lastLogin: new Date().toISOString()
-      };
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Login failed:', errorData);
+        return false;
+      }
+
+      const result = await response.json();
       
-      const newAuthState = {
-        user: updatedUser,
-        isAuthenticated: true
-      };
+      if (result.success && result.data.user) {
+        const newAuthState = {
+          user: {
+            ...result.data.user,
+            name: `${result.data.user.firstName} ${result.data.user.lastName}`,
+            role: result.data.user.role.toLowerCase() // Convert ADMIN -> admin
+          },
+          isAuthenticated: true
+        };
+        
+        setAuthState(newAuthState);
+        return true;
+      }
       
-      setAuthState(newAuthState);
-      return true;
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    
-    return false;
   };
 
   const logout = () => {

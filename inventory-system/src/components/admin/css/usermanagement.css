@@ -1,0 +1,679 @@
+/* User Management Component Styles */
+
+/* Container and Layout */
+.user-management-container {
+  padding: 24px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+/* Header Section */
+.user-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+}
+
+.user-management-title {
+  margin: 0 0 8px 0;
+  font-size: 1.8rem;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-management-subtitle {
+  margin: 0;
+  color: #666666;
+}
+
+.add-user-button {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.add-user-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Loading State */
+.loading-container {
+  padding: 40px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.loading-spinner {
+  font-size: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #000000;
+}
+
+.error-close-button {
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* Controls Section */
+.controls-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  justify-content: flex-start;
+}
+
+.search-container {
+  position: relative;
+  flex: 0 0 auto;
+  width: 320px;
+  min-width: 280px;
+  max-width: 350px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666666;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.search-clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s;
+}
+
+.search-clear-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.search-results-count {
+  position: absolute;
+  right: 35px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #666666;
+  background-color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #000000;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 14px;
+  cursor: pointer;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Container */
+.table-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid #000000;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background-color: #000000;
+}
+
+.table-header-cell {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.table-row {
+  border-bottom: 1px solid #000000;
+  background-color: #ffffff;
+}
+
+.table-row.inactive {
+  opacity: 0.6;
+}
+
+.table-cell {
+  padding: 16px;
+  color: #000000;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: #000000;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.retry-button {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.retry-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.retry-info {
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+/* User Avatar and Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #000000 !important;
+  color: #000000 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 2px solid #000000;
+}
+
+/* Alternative avatar styles for variety while maintaining black/white theme */
+.user-avatar.admin {
+  background-color: #000000 !important;
+  
+  border: 2px solid #000000;
+}
+
+.user-avatar.manager {
+  background-color: #ffffff !important;
+ 
+  border: 2px solid #000000;
+}
+
+.user-avatar.cashier {
+  background-color: #000000 !important;
+  
+
+}
+
+.user-name {
+  font-weight: 500;
+  color: #000000;
+}
+
+/* Role Badge */
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-badge.admin {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.role-badge.manager {
+  background-color: #666666;
+  color: #ffffff;
+}
+
+.role-badge.cashier {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+/* Status Toggle */
+.status-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-toggle.active {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.status-toggle.inactive {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.action-button.edit {
+  color: #3b82f6;
+}
+
+.action-button.delete {
+  color: #dc2626;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  border: 1px solid #000000;
+}
+
+.pagination-button {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.pagination-info {
+  color: #000000;
+}
+
+.pagination-button:disabled {
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #000000;
+  font-size: 0.9rem;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90vw;
+  border: 1px solid #000000;
+}
+
+.modal-title {
+  margin: 0 0 16px 0;
+  color: #000000;
+}
+
+.modal-title.delete {
+  color: #000000;
+}
+
+.modal-description {
+  margin: 0 0 8px 0;
+  color: #000000;
+}
+
+.modal-warning {
+  color: #666666;
+  font-size: 0.9rem;
+  margin: 0 0 20px 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-button.cancel {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+.modal-button.cancel:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.modal-button.primary {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.modal-button.primary:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.modal-button.danger {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.modal-button.danger:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Action Dropdown Styles */
+.action-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #000000;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.dropdown-toggle:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.dropdown-menu {
+  position: fixed;
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  min-width: 140px;
+  padding: 4px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #000000;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.dropdown-item.delete {
+  color: #000000;
+}
+
+.dropdown-item.delete:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.dropdown-item i {
+  width: 16px;
+  font-size: 0.875rem;
+}
+
+/* Enhanced Date Formatting */
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+}
+
+.date-primary {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.2;
+}
+
+.date-primary.never-logged {
+  color: #666666;
+  font-style: italic;
+}
+
+.date-primary.recent-date {
+  color: #000000;
+  font-weight: 600;
+}
+
+.date-secondary {
+  font-size: 0.75rem;
+  color: #666666;
+  line-height: 1;
+}
+
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #000000;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.date-badge i {
+  font-size: 0.6rem;
+}
+
+/* Search Input Enhancement */
+.search-input {
+  padding-right: 40px; /* Make room for clear button */
+}
+
+/* Improved table cell spacing for dates */
+.table-cell .date-cell {
+  min-width: 120px;
+}
+
+/* Responsive controls */
+@media (max-width: 768px) {
+  .controls-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+  
+  .filter-select {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .search-container {
+    width: 300px;
+    max-width: 350px;
+  }
+}
