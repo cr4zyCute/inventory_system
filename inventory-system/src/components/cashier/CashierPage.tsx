@@ -41,6 +41,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
     { barcode: '9876543210987', name: 'Organic Milk', price: 4.99, stock: 30 },
     { barcode: '5555555555555', name: 'Fresh Bread', price: 3.49, stock: 25 },
     { barcode: '1111111111111', name: 'Energy Drink', price: 2.99, stock: 100 },
+    { barcode: '049000132601', name: 'Scanned Product', price: 5.99, stock: 20 },
   ];
 
   const findProductByBarcode = (barcode: string): Product | null => {
