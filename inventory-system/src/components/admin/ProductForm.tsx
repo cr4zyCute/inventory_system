@@ -20,13 +20,15 @@ interface ProductFormProps {
   isEditing: boolean;
   onSubmit: (productData: any) => Promise<void>;
   onCancel: () => void;
+  initialBarcode?: string;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   product,
   isEditing,
   onSubmit,
-  onCancel
+  onCancel,
+  initialBarcode
 }) => {
   const [formData, setFormData] = useState({
     barcode: '',
@@ -59,7 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     } else {
       // Reset form for new product
       setFormData({
-        barcode: '',
+        barcode: initialBarcode || '',
         name: '',
         description: '',
         price: '',
@@ -71,7 +73,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       });
     }
     setErrors({});
-  }, [product, isEditing]);
+  }, [product, isEditing, initialBarcode]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};

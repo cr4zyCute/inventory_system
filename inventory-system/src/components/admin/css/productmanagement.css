@@ -20,6 +20,424 @@
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
 }
 
+.product-management-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.polling-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: #f0f8ff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #007bff;
+  animation: pulse 2s infinite;
+}
+
+.polling-indicator i {
+  font-size: 0.9rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Phone Success Modal Styles */
+.phone-success-overlay {
+  background: radial-gradient(circle at center, rgba(40, 167, 69, 0.15), rgba(0, 0, 0, 0.85));
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+}
+
+.phone-success-modal {
+  background: linear-gradient(145deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+  color: #000000;
+  border-radius: 24px;
+  padding: 0;
+  max-width: 380px;
+  width: 92%;
+  text-align: center;
+  box-shadow: 
+    0 25px 80px rgba(40, 167, 69, 0.4),
+    0 15px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: phoneSuccessSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-success-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes phoneSuccessSlideIn {
+  0% {
+    transform: scale(0.7) translateY(-80px) rotateX(15deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) translateY(-10px) rotateX(0deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) translateY(0) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.phone-success-header {
+  padding: 35px 25px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.success-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  color: #000000;
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.8),
+    0 0 40px rgba(40, 167, 69, 0.5),
+    0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: successIconPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+@keyframes successIconPulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+  }
+}
+
+.success-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000000;
+  text-shadow: 
+    0 2px 8px rgba(255, 255, 255, 0.8),
+    0 0 15px rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
+.phone-success-body {
+  padding: 30px 25px;
+  position: relative;
+}
+
+.scanned-barcode-display {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backdrop-filter: blur(15px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: barcodeGlow 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.scanned-barcode-display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: barcodeShimmer 2.5s infinite;
+}
+
+@keyframes barcodeGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 0 0 rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 0 20px rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes barcodeShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.scanned-barcode-display i {
+  font-size: 1.4rem;
+  color: #000000;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+}
+
+.barcode-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #000000;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+}
+
+.success-message {
+  margin: 20px 0;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.95;
+  font-weight: 500;
+  color: #000000;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  animation: messageSlideIn 0.8s ease-out 0.3s both;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 0.95;
+    transform: translateY(0);
+  }
+}
+
+.success-message i {
+  font-size: 1.2rem;
+  animation: laptopBounce 2s ease-in-out infinite;
+}
+
+@keyframes laptopBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.next-scan-hint {
+  margin: 20px 0 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.9;
+  font-style: italic;
+  font-weight: 400;
+  color: #000000;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  animation: hintFadeIn 1s ease-out 0.6s both;
+}
+
+@keyframes hintFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+.next-scan-hint i {
+  animation: rotateIcon 2s linear infinite;
+}
+
+@keyframes rotateIcon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.phone-success-actions {
+  padding: 0 25px 35px;
+}
+
+.phone-success-button {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+  color: #000000;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 18px 35px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  backdrop-filter: blur(15px);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-success-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.phone-success-button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.25));
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.phone-success-button:hover::before {
+  left: 100%;
+}
+
+.phone-success-button:active {
+  transform: translateY(-2px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.phone-success-button i {
+  font-size: 1.3rem;
+  animation: cameraIcon 2s ease-in-out infinite;
+}
+
+@keyframes cameraIcon {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  }
+}
+
+/* Floating Particles */
+.success-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: floatParticle 4s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.particle:nth-child(1) {
+  left: 20%;
+  animation-delay: 0s;
+  animation-duration: 3s;
+}
+
+.particle:nth-child(2) {
+  left: 40%;
+  animation-delay: 0.5s;
+  animation-duration: 3.5s;
+}
+
+.particle:nth-child(3) {
+  left: 60%;
+  animation-delay: 1s;
+  animation-duration: 4s;
+}
+
+.particle:nth-child(4) {
+  left: 80%;
+  animation-delay: 1.5s;
+  animation-duration: 3.2s;
+}
+
+.particle:nth-child(5) {
+  left: 30%;
+  animation-delay: 2s;
+  animation-duration: 3.8s;
+}
+
+.particle:nth-child(6) {
+  left: 70%;
+  animation-delay: 2.5s;
+  animation-duration: 3.3s;
+}
+
+@keyframes floatParticle {
+  0% {
+    bottom: -10px;
+    opacity: 0;
+    transform: translateX(0) scale(0);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(20px) scale(1);
+  }
+  100% {
+    bottom: 110%;
+    opacity: 0;
+    transform: translateX(40px) scale(0);
+  }
+}
+
 .product-management-title {
   margin: 0 0 8px 0;
   font-size: 1.8rem;
@@ -34,7 +452,8 @@
   color: #666666;
 }
 
-.add-product-button {
+.add-product-button,
+.scan-product-button {
   background-color: #000000;
   color: #ffffff;
   border: 1px solid #ffffff;
@@ -47,9 +466,21 @@
   transition: all 0.2s;
 }
 
-.add-product-button:hover {
+.add-product-button:hover,
+.scan-product-button:hover {
   background-color: #ffffff;
   color: #000000;
+}
+
+.scan-product-button {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.scan-product-button:hover {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 /* Loading State */
@@ -512,6 +943,23 @@
   color: #000000;
 }
 
+.modal-button.primary {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.modal-button.primary:disabled,
+.modal-button.cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-button.primary:hover:not(:disabled) {
+  background-color: #ffffff;
+  color: #000000;
+}
+
 /* Enhanced Delete Modal Styles */
 .delete-modal-overlay {
   background-color: rgba(0, 0, 0, 0.7);
@@ -893,6 +1341,113 @@
 .modal-close-button:hover {
   background-color: #000000;
   color: #ffffff;
+}
+
+.scan-modal-content {
+  max-width: 720px;
+  width: 95%;
+  border: 1px solid #000000;
+}
+
+.scan-modal-body {
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.scanner-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.scan-instructions {
+  background-color: #f8f9fa;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 1rem;
+  color: #000000;
+  font-size: 0.9rem;
+}
+
+.scan-instructions i {
+  margin-right: 8px;
+}
+
+.scan-error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ff6b6b;
+  background-color: #ffecec;
+  color: #000000;
+  font-size: 0.85rem;
+}
+
+.scanned-barcode-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  background-color: #f0f8ff;
+}
+
+.preview-icon {
+  font-size: 1.5rem;
+  color: #16a34a;
+}
+
+.preview-label {
+  margin: 0;
+  color: #000000;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.preview-value {
+  display: inline-block;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  color: #000000;
+}
+
+.scan-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .product-management-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .scan-modal-content {
+    width: 95%;
+  }
+
+  .scan-modal-body {
+    padding: 1rem;
+  }
+
+  .scan-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .scan-modal-actions .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Loading Spinner */

@@ -128,7 +128,7 @@ const PhoneScanner = () => {
     try {
       console.log('📱 Starting Html5Qrcode...');
       await html5QrCode.start(
-        { facingMode: { ideal: 'environment' } },
+        { facingMode: 'environment' },
         config,
         onScanSuccess,
         onScanError

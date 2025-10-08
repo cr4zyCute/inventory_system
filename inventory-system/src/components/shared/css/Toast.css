@@ -126,10 +126,16 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .toast {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    min-width: auto;
-    max-width: none;
+    display: none !important;
+  }
+}
+
+/* For larger screens, keep normal toast behavior */
+@media (min-width: 769px) {
+  .toast {
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 500px;
   }
 }

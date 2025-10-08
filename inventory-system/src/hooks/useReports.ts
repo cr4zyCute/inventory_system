@@ -58,7 +58,10 @@ interface DashboardAnalyticsData {
 }
 
 // Sales Summary Report
-export const useSalesReport = (params: ReportParams) => {
+export const useSalesReport = (
+  params: ReportParams,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ['salesReport', params],
     queryFn: async (): Promise<SalesReportData> => {
@@ -78,7 +81,7 @@ export const useSalesReport = (params: ReportParams) => {
       const result = await response.json();
       return result.data;
     },
-    enabled: !!params.startDate && !!params.endDate,
+    enabled: options?.enabled ?? (!!params.startDate && !!params.endDate),
   });
 };
 
@@ -100,12 +103,15 @@ export const useInventoryReport = (options?: { enabled?: boolean }) => {
       const result = await response.json();
       return result.data;
     },
-    enabled: options?.enabled !== false,
+    enabled: options?.enabled ?? true,
   });
 };
 
 // User Sales Report (My Sales)
-export const useUserSalesReport = (params: ReportParams) => {
+export const useUserSalesReport = (
+  params: ReportParams,
+  options?: { enabled?: boolean }
+) => {
   const { user } = useAuth();
   
   return useQuery({
@@ -131,12 +137,15 @@ export const useUserSalesReport = (params: ReportParams) => {
       const result = await response.json();
       return result.data;
     },
-    enabled: !!user?.id && !!params.startDate && !!params.endDate,
+    enabled: options?.enabled ?? (!!user?.id && !!params.startDate && !!params.endDate),
   });
 };
 
 // Daily Transactions Report
-export const useDailyTransactionsReport = (params: ReportParams) => {
+export const useDailyTransactionsReport = (
+  params: ReportParams,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ['dailyTransactionsReport', params],
     queryFn: async (): Promise<UserSalesReportData> => {
@@ -156,12 +165,12 @@ export const useDailyTransactionsReport = (params: ReportParams) => {
       const result = await response.json();
       return result.data;
     },
-    enabled: !!params.startDate && !!params.endDate,
+    enabled: options?.enabled ?? (!!params.startDate && !!params.endDate),
   });
 };
 
 // Dashboard Analytics
-export const useDashboardAnalytics = () => {
+export const useDashboardAnalytics = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['dashboardAnalytics'],
     queryFn: async (): Promise<DashboardAnalyticsData> => {
@@ -178,6 +187,7 @@ export const useDashboardAnalytics = () => {
       const result = await response.json();
       return result.data;
     },
-    refetchInterval: 30000, // Refetch every 30 seconds for real-time data
+    enabled: options?.enabled ?? true,
+    refetchInterval: options?.enabled ?? true ? 30000 : false,
   });
 };

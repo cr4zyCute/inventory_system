@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import Reports from '../shared/report';
+import ProductManagement from '../admin/ProductManagement';
 import './ManagerDashboard.css';
 
 export function ManagerDashboard() {
@@ -130,15 +131,7 @@ export function ManagerDashboard() {
           </>
         );
       case 'inventory':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-boxes"></i> Inventory Management</h2>
-            <p>Monitor and control inventory levels, stock alerts, and product management.</p>
-            <div className="placeholder-content">
-              <p>Inventory management interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <ProductManagement />;
       case 'reports':
         return <Reports />;
       case 'staff':
