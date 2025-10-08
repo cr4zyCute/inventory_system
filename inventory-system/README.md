@@ -97,7 +97,7 @@ Currently uses mock data. To add real products, modify the `mockProducts` array 
 - **Styling**: Update CSS files for custom themes
 - **Product data**: Replace mock data with API calls
 
-## 📝 Notes
+##   Notes
 
 - The scanner works best with good lighting conditions
 - For production deployment, ensure HTTPS is configured for camera access

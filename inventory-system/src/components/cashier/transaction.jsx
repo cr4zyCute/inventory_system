@@ -385,7 +385,7 @@ const TransactionDisplay = () => {
     e.preventDefault();
     if (!manualBarcode.trim()) return;
 
-    console.log('📝 Manual barcode entry:', manualBarcode);
+    console.log('  Manual barcode entry:', manualBarcode);
     
     // Create scan data similar to phone scanner
     const scanData = {
@@ -459,7 +459,7 @@ const TransactionDisplay = () => {
                     {new Date(scan.timestamp).toLocaleTimeString()}
                   </div>
                   <div className="scan-device">
-                    {scan.deviceType === 'manual' ? '📝 Manual' : '📱 Phone'}
+                    {scan.deviceType === 'manual' ? '  Manual' : '📱 Phone'}
                   </div>
                 </div>
               ))}
@@ -486,10 +486,10 @@ const TransactionDisplay = () => {
                 <div key={item.id} className="cart-item">
                   <div className="item-info">
                     <h4>{item.name}</h4>
-                    <p className="barcode">📊 {item.barcode}</p>
+                    <p className="barcode">{item.barcode}</p>
                     <p className="price">₱{item.price.toFixed(2)}</p>
                     <p className="scanned-by">
-                      {item.scannedBy === 'manual' ? '📝 Added manually' : '📱 Scanned by phone'} at {item.timestamp.toLocaleTimeString()}
+                      {item.scannedBy === 'manual' ? '  Added manually' : '📱 Scanned by phone'} at {item.timestamp.toLocaleTimeString()}
                     </p>
                   </div>
                   <div className="item-controls">

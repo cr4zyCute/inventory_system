@@ -65,7 +65,7 @@ export const useInventoryActivity = () => {
       return updated;
     });
     
-    console.log('📝 Logged inventory activity:', newActivity);
+    console.log('  Logged inventory activity:', newActivity);
   };
 
   const clearActivities = () => {
