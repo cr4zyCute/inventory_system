@@ -43,6 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     
     // Cashier Only
     { id: 'scanner', label: 'Barcode Scanner', icon: 'bi-upc-scan', roles: ['cashier'], section: 'operations' },
+    { id: 'phone-scanner', label: 'Phone Scanner', icon: 'bi-phone', roles: ['cashier'], section: 'operations' },
+    { id: 'transaction-display', label: 'Transaction Display', icon: 'bi-display', roles: ['cashier'], section: 'operations' },
     { id: 'quick-sale', label: 'Quick Sale', icon: 'bi-lightning', roles: ['cashier'], section: 'operations' },
   ];
 

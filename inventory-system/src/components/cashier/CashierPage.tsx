@@ -2,6 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import BarcodeScanner from './BarcodeScanner';
+// @ts-ignore - JSX components
+import PhoneScanner from './scan.jsx';
+// @ts-ignore - JSX components  
+import TransactionDisplay from './transaction.jsx';
 import Reports from '../shared/report';
 import './BarcodeScanner.css';
 import './CashierPage.css';
@@ -324,6 +328,10 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
             </div>
           </section>
         );
+      case 'phone-scanner':
+        return <PhoneScanner />;
+      case 'transaction-display':
+        return <TransactionDisplay />;
       case 'reports':
         return <Reports />;
       default:
@@ -343,19 +351,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
         onItemClick={handleSidebarItemClick}
       />
       <div className="dashboard-content">
-        <div className="cashier-header">
-          <div className="header-left">
-            {onBackToHome && (
-              <button onClick={onBackToHome} className="back-btn">
-                <i className="bi-arrow-left"></i> Back to Home
-              </button>
-            )}
-            <div className="header-info">
-              <h1><i className="bi-cart3"></i> Cashier System</h1>
-              <p>Welcome, <strong>{user?.firstName} {user?.lastName}</strong> - Scan barcodes to add items to cart</p>
-            </div>
-          </div>
-        </div>
+
 
         <main className="dashboard-main">
           {renderContent()}

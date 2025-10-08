@@ -6,9 +6,15 @@ async function bootstrap() {
   
   // Enable CORS
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: [
+      'http://localhost:5173', 
+      'http://localhost:3000',
+      'https://33d6ce07c902.ngrok-free.app',
+      /\.ngrok-free\.app$/  // Allow any ngrok subdomain
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   });
   
   // Add global prefix for API routes
