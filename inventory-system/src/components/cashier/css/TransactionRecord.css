@@ -1,8 +1,169 @@
-/* Transaction Record Styles - Matching ProductManagement Theme */
 .transaction-record-container {
   padding: 24px;
   min-height: 100vh;
   color: #ffffff;
+  background-color: #ffffff;
+}
+.receipt-modal-transaction {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.receipt-modal-content-transaction{
+  background: white;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 25%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: block;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Close button for transaction modal */
+.receipt-close-btn-transaction {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.receipt-close-btn-transaction:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Receipt container styles */
+.receipt-container {
+  max-width: 350px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.receipt-header {
+  text-align: center;
+  border-bottom: 1px dashed #000;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.shop-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #000;
+}
+
+.shop-details {
+  font-size: 12px;
+  line-height: 1.3;
+  color: #666;
+}
+
+.receipt-title {
+  text-align: center;
+  font-weight: bold;
+  margin: 15px 0;
+  font-size: 14px;
+  color: #000;
+}
+
+.receipt-info {
+  margin-bottom: 15px;
+  font-size: 11px;
+  color: #000;
+}
+
+.receipt-items {
+  border-top: 1px dashed #000;
+  border-bottom: 1px dashed #000;
+  padding: 10px 0;
+  margin: 15px 0;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  font-size: 12px;
+  color: #000;
+}
+
+.item-name {
+  flex: 1;
+}
+
+.item-qty {
+  margin: 0 10px;
+}
+
+.item-price {
+  text-align: right;
+  min-width: 40px;
+}
+
+.receipt-totals {
+  border-bottom: 1px dashed #000;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  font-size: 12px;
+  color: #000;
+}
+
+.total-row.final {
+  font-weight: bold;
+  font-size: 14px;
+  border-top: 1px solid #000;
+  padding-top: 5px;
+  margin-top: 5px;
+}
+
+.receipt-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #000;
+}
+
+.barcode {
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  margin: 10px 0;
+  letter-spacing: 1px;
+  color: #000;
 }
 
 /* Header Section */

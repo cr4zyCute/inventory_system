@@ -380,7 +380,7 @@ const Receipt = ({ items, total, onClose, onPrint }) => {
         <div className="receipt-preview">
           <div ref={receiptRef} className="receipt-container">
             <div className="receipt-header">
-              <div className="shop-name">SHOP NAME</div>
+              <div className="shop-name">TINDAHAN Store</div>
               <div className="shop-details">
                 Address: Lorem Ipsum, 23-10<br/>
                 Telp. 11223344
@@ -435,9 +435,6 @@ const Receipt = ({ items, total, onClose, onPrint }) => {
             <div className="receipt-footer">
               <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>
                 THANK YOU!
-              </div>
-              <div className="barcode">
-                ||||| |||| | || |||| | ||||| ||||
               </div>
             </div>
           </div>

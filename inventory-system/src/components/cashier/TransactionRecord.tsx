@@ -177,8 +177,8 @@ const TransactionHistory: React.FC = () => {
         <body>
           <div class="receipt-container">
             <div class="receipt-header">
-              <div class="shop-name">SHOP NAME</div>
-              <div class="shop-details">Address: Lorem Ipsum, 23-10<br/>Telp. 11223344</div>
+              <div class="shop-name">TINDAHAN STORE</div>
+              <div class="shop-details">Address: Lorem Ipsum, 23-10<br/>Telp. 0922ayawugtoo</div>
             </div>
             <div class="receipt-title">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★<br/>CASH RECEIPT<br/>★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
             <div class="receipt-info">
@@ -261,15 +261,68 @@ const TransactionHistory: React.FC = () => {
     ];
 
     return (
-      <Receipt
-        items={receiptItems}
-        total={selectedTransaction.total}
-        onClose={closeReceiptPreview}
-        onPrint={() => {
-          // Handle print completion
-          closeReceiptPreview();
-        }}
-      />
+      <div className="receipt-modal-transaction">
+        <div className="receipt-modal-content-transaction">
+          <button className="receipt-close-btn-transaction" onClick={closeReceiptPreview}>×</button>
+          <div className="receipt-container">
+            <div className="receipt-header">
+              <div className="shop-name">TINDAHAN STORE</div>
+              <div className="shop-details">
+                Address: sa puso mo, 23-10<br/>
+                Telp. 0922ayawugtoo
+              </div>
+            </div>
+
+            <div className="receipt-title">
+              ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★<br/>
+              CASH RECEIPT<br/>
+              ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★
+            </div>
+
+            <div className="receipt-info">
+              <div style={{ fontSize: '11px', marginBottom: '10px' }}>
+                Receipt #: {selectedTransaction.id}<br/>
+                Date: {selectedTransaction.date}<br/>
+                Time: {selectedTransaction.time}<br/>
+                Cashier: {selectedTransaction.cashier}
+              </div>
+            </div>
+
+            <div className="receipt-items">
+              <div className="item-row" style={{ fontWeight: 'bold', borderBottom: '1px solid #000', paddingBottom: '3px', marginBottom: '5px' }}>
+                <span className="item-name">Description</span>
+                <span className="item-qty">Qty</span>
+                <span className="item-price">Price</span>
+              </div>
+              {receiptItems.map((item, index) => (
+                <div key={index} className="item-row">
+                  <span className="item-name">{item.name}</span>
+                  <span className="item-qty">{item.quantity}</span>
+                  <span className="item-price">₱{(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="receipt-totals">
+              <div className="total-row final">
+                <span>Total</span>
+                <span>₱{selectedTransaction.total.toFixed(2)}</span>
+              </div>
+              <div className="total-row">
+                <span>Payment</span>
+                <span>{selectedTransaction.paymentMethod}</span>
+              </div>
+            </div>
+
+            <div className="receipt-footer">
+              <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                THANK YOU!
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
