@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import Receipt from './Receipt';
 import './CashierPage.css';
 import './css/transactionview.css';
 
@@ -17,6 +18,9 @@ const TransactionDisplay = () => {
   const [lastScannedBarcode, setLastScannedBarcode] = useState(null);
   const [lastScanTimestamp, setLastScanTimestamp] = useState(null);
   const [componentInitTime, setComponentInitTime] = useState(null);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptItems, setReceiptItems] = useState([]);
+  const [receiptTotal, setReceiptTotal] = useState(0);
 
   // Product database - this should connect to your actual API
   const findProductByBarcode = async (barcode) => {
@@ -89,6 +93,9 @@ const TransactionDisplay = () => {
     const currentTime = Date.now();
     const scanTime = new Date(timestamp).getTime();
     
+    // Create unique scan identifier
+    const scanId = `${barcode}-${timestamp}`;
+    
     // CRITICAL: Only process scans that are newer than component initialization
     if (componentInitTime && scanTime < componentInitTime) {
       console.log('🚫 Ignoring old scan from before component initialization:', {
@@ -99,10 +106,16 @@ const TransactionDisplay = () => {
       return;
     }
     
-    // Cooldown logic: prevent same barcode within 2 seconds
+    // Check if we've already processed this exact scan (by timestamp + barcode)
+    if (processedLocalScans.has(scanId)) {
+      console.log('🚫 Already processed this exact scan:', scanId);
+      return;
+    }
+    
+    // Enhanced cooldown logic: prevent same barcode within 3 seconds
     if (lastScannedBarcode === barcode && lastScanTimestamp) {
       const timeSinceLastScan = currentTime - lastScanTimestamp;
-      if (timeSinceLastScan < 2000) { // 2 second cooldown
+      if (timeSinceLastScan < 3000) { // 3 second cooldown
         console.log('⏸️ Scan cooldown active, ignoring rapid scan:', { 
           barcode, 
           timeSinceLastScan: `${timeSinceLastScan}ms` 
@@ -111,10 +124,12 @@ const TransactionDisplay = () => {
       }
     }
     
+    // Mark this scan as processed immediately
+    setProcessedLocalScans(prev => new Set([...prev, scanId]));
+    
     // Update cooldown tracking
     setLastScannedBarcode(barcode);
     setLastScanTimestamp(currentTime);
-    
     setLastScanTime(new Date(timestamp));
     setConnectionStatus('connected');
     
@@ -132,21 +147,38 @@ const TransactionDisplay = () => {
     const product = await findProductByBarcode(barcode);
     
     if (product) {
-      // ALWAYS add as a new separate item (1 scan = 1 new item)
-      const newItem = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Unique ID for each scan
-        barcode,
-        name: product.name,
-        price: product.price,
-        quantity: 1, // Always 1 per scan
-        timestamp: new Date(timestamp),
-        scannedBy: deviceType
-      };
-      
-      console.log('➕ Adding new item to cart:', newItem);
-      setScannedItems(prev => [...prev, newItem]);
+      // Check if product already exists in cart
+      setScannedItems(prev => {
+        const existingItemIndex = prev.findIndex(item => item.barcode === barcode);
+        
+        if (existingItemIndex >= 0) {
+          // Product exists, increase quantity
+          const updatedItems = [...prev];
+          updatedItems[existingItemIndex] = {
+            ...updatedItems[existingItemIndex],
+            quantity: updatedItems[existingItemIndex].quantity + 1,
+            lastScanned: new Date(timestamp) // Track when last scanned
+          };
+          console.log(`➕ Increased quantity for ${product.name}: ${updatedItems[existingItemIndex].quantity}`);
+          return updatedItems;
+        } else {
+          // New product, add to cart
+          const newItem = {
+            id: `${barcode}-${Date.now()}`, // Use barcode-based ID for consistency
+            barcode,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            timestamp: new Date(timestamp),
+            lastScanned: new Date(timestamp),
+            scannedBy: deviceType
+          };
+          console.log('➕ Adding new product to cart:', newItem);
+          return [...prev, newItem];
+        }
+      });
     }
-  }, [lastScannedBarcode, lastScanTimestamp, componentInitTime]);
+  }, [lastScannedBarcode, lastScanTimestamp, componentInitTime, processedLocalScans]);
 
   // Comprehensive API testing function
   const runDiagnostics = async () => {
@@ -362,10 +394,10 @@ const TransactionDisplay = () => {
     };
   }, [handleNewScan, lastProcessedScanId, processedLocalScans, isInitialized]);
 
-  // Calculate total whenever items change (each scan = 1 item)
+  // Calculate total whenever items change (price * quantity)
   useEffect(() => {
     const newTotal = scannedItems.reduce((sum, item) => 
-      sum + item.price, 0 // Each item is quantity 1
+      sum + (item.price * item.quantity), 0 // Price multiplied by quantity
     );
     setTotal(newTotal);
   }, [scannedItems]);
@@ -374,7 +406,26 @@ const TransactionDisplay = () => {
     setScannedItems(prev => prev.filter(item => item.id !== id));
   };
 
-  // Each scan is a separate item, so we only need remove functionality
+  // Quantity control functions
+  const increaseQuantity = (id) => {
+    setScannedItems(prev => 
+      prev.map(item => 
+        item.id === id 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (id) => {
+    setScannedItems(prev => 
+      prev.map(item => 
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
 
   const clearCart = () => {
     setScannedItems([]);
@@ -407,7 +458,20 @@ const TransactionDisplay = () => {
       return;
     }
     
-    alert(`Processing payment for ₱${total.toFixed(2)}`);
+    // Prepare receipt data
+    setReceiptItems([...scannedItems]);
+    setReceiptTotal(total);
+    setShowReceipt(true);
+  };
+
+  const handleReceiptClose = () => {
+    setShowReceipt(false);
+    setReceiptItems([]);
+    setReceiptTotal(0);
+  };
+
+  const handleReceiptPrint = async () => {
+    // Clear cart after successful print
     clearCart();
   };
 
@@ -487,18 +551,38 @@ const TransactionDisplay = () => {
                   <div className="item-info">
                     <h4>{item.name}</h4>
                     <p className="barcode">{item.barcode}</p>
-                    <p className="price">₱{item.price.toFixed(2)}</p>
+                    <p className="price">₱{item.price.toFixed(2)} each</p>
                     <p className="scanned-by">
-                      {item.scannedBy === 'manual' ? '  Added manually' : '📱 Scanned by phone'} at {item.timestamp.toLocaleTimeString()}
+                      {item.scannedBy === 'manual' ? '  Added manually' : '📱 Scanned by phone'} 
+                      {item.lastScanned && ` (last: ${item.lastScanned.toLocaleTimeString()})`}
                     </p>
                   </div>
                   <div className="item-controls">
+                    <div className="quantity-controls">
+                      <button 
+                        onClick={() => decreaseQuantity(item.id)}
+                        className="quantity-btn decrease"
+                        disabled={item.quantity <= 1}
+                      >
+                        <i className="bi-dash"></i>
+                      </button>
+                      <span className="quantity-display">
+                        <strong>{item.quantity}</strong> pcs
+                      </span>
+                      <button 
+                        onClick={() => increaseQuantity(item.id)}
+                        className="quantity-btn increase"
+                      >
+                        <i className="bi-plus"></i>
+                      </button>
+                    </div>
                     <div className="item-total">
-                      ₱{item.price.toFixed(2)}
+                      <strong>₱{(item.price * item.quantity).toFixed(2)}</strong>
                     </div>
                     <button 
                       onClick={() => removeItem(item.id)}
                       className="remove-btn"
+                      title="Remove item"
                     >
                       <i className="bi-x-circle"></i>
                     </button>
@@ -522,6 +606,16 @@ const TransactionDisplay = () => {
           </div>
         </div>
       </div>
+
+      {/* Receipt Modal */}
+      {showReceipt && (
+        <Receipt
+          items={receiptItems}
+          total={receiptTotal}
+          onClose={handleReceiptClose}
+          onPrint={handleReceiptPrint}
+        />
+      )}
 
     </div>
   );

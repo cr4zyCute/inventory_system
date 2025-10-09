@@ -14,7 +14,9 @@ export default defineConfig({
     host: true,
     allowedHosts: [
       '33d6ce07c902.ngrok-free.app',
+      'desiccative-approvingly-juanita.ngrok-free.dev',
       '.ngrok-free.app', // Allow any ngrok subdomain
+      '.ngrok-free.dev', // Allow any ngrok-free.dev subdomain
     ],
     proxy: {
       '/api': {

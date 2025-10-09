@@ -578,7 +578,7 @@
 
 /* Ensure the scanner region is visible */
 .html5-scanner-fullscreen #qr-shaded-region {
-  background: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(255, 255, 255, 0) !important;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;

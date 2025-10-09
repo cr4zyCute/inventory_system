@@ -32,6 +32,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string>('');
   const mountedRef = useRef(true);
+  const lastScanRef = useRef<{ barcode: string; timestamp: number } | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -90,7 +91,33 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
       const onScanSuccessHandler = (decodedText: string, decodedResult: any) => {
         if (!mountedRef.current) return;
+        
+        const now = Date.now();
+        const SCAN_COOLDOWN = 3000; // 3 second cooldown between same barcode scans
+        
+        // Check if this is a duplicate scan within the cooldown period
+        if (lastScanRef.current) {
+          const timeDiff = now - lastScanRef.current.timestamp;
+          const isSameBarcode = lastScanRef.current.barcode === decodedText;
+          
+          if (isSameBarcode && timeDiff < SCAN_COOLDOWN) {
+            console.log(`🚫 Duplicate scan ignored - cooldown active (${timeDiff}ms since last scan)`);
+            return; // Ignore duplicate scan
+          }
+        }
+        
+        // Update last scan info
+        lastScanRef.current = {
+          barcode: decodedText,
+          timestamp: now
+        };
+        
+        console.log(`✅ Processing new scan: ${decodedText}`);
         setError('');
+        
+        // Stop scanner immediately after successful scan to prevent rapid-fire scanning
+        stopScanner();
+        
         onScanSuccess(decodedText, decodedResult);
       };
 
@@ -114,6 +141,10 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       scannerRef.current.clear().catch(console.error);
       scannerRef.current = null;
     }
+    
+    // Reset last scan info
+    lastScanRef.current = null;
+    
     setIsScanning(false);
     setError('');
   };
@@ -129,6 +160,7 @@ const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         <div className="scanner-error">
           <p>Error: {error}</p>
         </div>
+        
       )}
       
       <div 

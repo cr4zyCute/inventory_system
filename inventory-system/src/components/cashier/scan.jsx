@@ -61,7 +61,7 @@ const PhoneScanner = () => {
       await stopScanner();
     }
 
-    setScanMessage('Scanner starting - Please allow camera access');
+    
     setError('');
 
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -140,10 +140,10 @@ const PhoneScanner = () => {
       }
 
       setIsScanning(true);
-      setScanMessage('📱 Scanner active - Point camera at barcode');
-      console.log('📱 Scanner started successfully');
+    
+      
     } catch (error) {
-      console.error('📱 Failed to start scanner:', error);
+      
       await stopScanner();
       if (mountedRef.current) {
         setError(`Failed to start scanner: ${error.message}`);
@@ -269,7 +269,7 @@ const PhoneScanner = () => {
     setTimeout(() => {
       if (mountedRef.current) {
         startScanner();
-        setScanMessage('Scanner active - Ready for next item');
+       
       }
     }, 300); // Small delay for smooth UX
   };

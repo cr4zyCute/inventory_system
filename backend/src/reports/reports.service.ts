@@ -226,7 +226,7 @@ export class ReportsService {
     });
 
     const recentTransactionsFormatted = recentTransactions.map(transaction => ({
-      id: transaction.transactionNumber,
+      id: transaction.id,
       time: transaction.createdAt.toLocaleTimeString(),
       amount: transaction.totalAmount,
       items: transaction.items.length,
@@ -299,11 +299,11 @@ export class ReportsService {
 
     // Format recent transactions
     const recentTransactions = transactions.slice(0, 10).map(transaction => ({
-      id: transaction.transactionNumber,
+      id: transaction.id,
       time: transaction.createdAt.toLocaleTimeString(),
       amount: transaction.totalAmount,
       items: transaction.items.length,
-      cashier: `${transaction.cashier.firstName} ${transaction.cashier.lastName}`,
+      cashier: transaction.cashier ? `${transaction.cashier.firstName} ${transaction.cashier.lastName}` : 'Unknown',
     }));
 
     return {

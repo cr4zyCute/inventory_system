@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ProductForm from './ProductForm';
 import Toast from '../shared/Toast';
 import { TableSkeleton, Skeleton } from '../common/skeletonLoading';
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct, useUpdateProductStatus } from '../../hooks/useProducts';
 import { useInventoryActivity } from '../../hooks/useInventoryActivity';
 import { useAuth } from '../../contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 // Note: Using cashier-style localStorage + API approach instead of scan queue hooks
 import BarcodeScanner from '../cashier/BarcodeScanner';
 import './css/productmanagement.css';
@@ -28,6 +29,7 @@ const ProductManagement: React.FC = () => {
   // Auth and activity logging
   const { user } = useAuth();
   const { logActivity } = useInventoryActivity();
+  const queryClient = useQueryClient();
   
   // TanStack Query hooks
   const { data: products = [], isLoading, error: queryError } = useProducts();
@@ -55,7 +57,22 @@ const ProductManagement: React.FC = () => {
   const [prefillBarcode, setPrefillBarcode] = useState<string | undefined>(undefined);
   const [showPhoneSuccessModal, setShowPhoneSuccessModal] = useState<boolean>(false);
   const [phoneScannedBarcode, setPhoneScannedBarcode] = useState<string>('');
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const lastProcessedTimestampRef = useRef<string | null>(null);
+
+  // Refresh function
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      setToast({ message: 'Products refreshed successfully!', type: 'success' });
+    } catch (error) {
+      console.error('Error refreshing products:', error);
+      setToast({ message: 'Failed to refresh products', type: 'error' });
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [queryClient, setToast]);
 
   // Handle query error
   useEffect(() => {
@@ -587,7 +604,7 @@ const ProductManagement: React.FC = () => {
             <h2 className="product-management-title">
               <i className="bi-boxes"></i> Product Management
             </h2>
-            <p className="product-management-subtitle">Manage inventory, pricing, and product information</p>
+
           </div>
           <button className="add-product-button" disabled>
             <i className="bi-plus-circle"></i>
@@ -660,6 +677,16 @@ const ProductManagement: React.FC = () => {
 
       {/* Controls */}
       <div className="controls-container">
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="refresh-button"
+          title="Refresh products table"
+        >
+          <i className={`bi-arrow-clockwise ${isRefreshing ? 'spinning' : ''}`}></i>
+          {isRefreshing ? 'Refreshing...' : 'Refresh'}
+        </button>
+        
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}

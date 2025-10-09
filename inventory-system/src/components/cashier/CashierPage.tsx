@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import BarcodeScanner from './BarcodeScanner';
@@ -39,56 +39,83 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
   const [scanMessage, setScanMessage] = useState<string>('');
   const [total, setTotal] = useState<number>(0);
   const [manualBarcode, setManualBarcode] = useState<string>('');
+  const lastScanTime = useRef<number>(0);
+  const lastScannedBarcode = useRef<string>('');
 
-  // Mock product database - matches seeded data
-  const mockProducts: Product[] = [
-    { barcode: '1234567890123', name: 'Premium Coffee Beans', price: 15.99, stock: 50 },
-    { barcode: '9876543210987', name: 'Organic Milk', price: 4.99, stock: 30 },
-    { barcode: '5555555555555', name: 'Fresh Bread', price: 3.49, stock: 25 },
-    { barcode: '1111111111111', name: 'Energy Drink', price: 2.99, stock: 100 },
-    { barcode: '049000132601', name: 'Scanned Product', price: 5.99, stock: 20 },
-  ];
-
-  const findProductByBarcode = (barcode: string): Product | null => {
-    return mockProducts.find(product => product.barcode === barcode) || null;
-  };
-
-  const handleScanSuccess = useCallback((decodedText: string, _decodedResult: any) => {
-    console.log('Scanned:', decodedText);
-    setLastScannedCode(decodedText);
-    
-    // Find product in database
-    const product = findProductByBarcode(decodedText);
-    
-    if (product) {
-      // Check if item already exists in cart
-      const existingItemIndex = scannedItems.findIndex(item => item.barcode === decodedText);
-      
-      if (existingItemIndex >= 0) {
-        // Update quantity
-        const updatedItems = [...scannedItems];
-        updatedItems[existingItemIndex].quantity += 1;
-        setScannedItems(updatedItems);
-        setScanMessage(`Added another ${product.name} to cart`);
-      } else {
-        // Add new item
-        const newItem: ScannedItem = {
-          id: Date.now().toString(),
-          barcode: decodedText,
+  // Fetch product from backend database
+  const findProductByBarcode = async (barcode: string): Promise<Product | null> => {
+    try {
+      const response = await fetch(`http://localhost:3000/products/barcode/${barcode}`);
+      if (response.ok) {
+        const product = await response.json();
+        return {
+          barcode: product.barcode,
           name: product.name,
           price: product.price,
-          quantity: 1,
-          timestamp: new Date()
+          stock: product.stockQuantity
         };
-        setScannedItems(prev => [...prev, newItem]);
-        setScanMessage(`Added ${product.name} to cart`);
       }
-      
-      // Calculate new total
-      const newTotal = scannedItems.reduce((sum, item) => {
-        return sum + (item.price * item.quantity);
-      }, 0) + product.price;
-      setTotal(newTotal);
+      return null;
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      return null;
+    }
+  };
+
+  const handleScanSuccess = useCallback(async (decodedText: string, _decodedResult: any) => {
+    const now = Date.now();
+    const DUPLICATE_THRESHOLD = 1500; // 1.5 seconds to prevent duplicate scans
+    
+    // Prevent duplicate scans
+    if (lastScannedBarcode.current === decodedText && 
+        (now - lastScanTime.current) < DUPLICATE_THRESHOLD) {
+      console.log('Duplicate scan prevented');
+      return;
+    }
+    
+    lastScanTime.current = now;
+    lastScannedBarcode.current = decodedText;
+    
+    console.log('Scanned:', decodedText);
+    setLastScannedCode(decodedText);
+    setScanMessage('Looking up product...');
+    
+    // Find product in backend database
+    const product = await findProductByBarcode(decodedText);
+    
+    if (product) {
+      setScannedItems(currentItems => {
+        // Check if item already exists in cart
+        const existingItemIndex = currentItems.findIndex(item => item.barcode === decodedText);
+        
+        let updatedItems;
+        if (existingItemIndex >= 0) {
+          // Update quantity for existing item
+          updatedItems = [...currentItems];
+          updatedItems[existingItemIndex].quantity += 1;
+          setScanMessage(`Added another ${product.name} (Qty: ${updatedItems[existingItemIndex].quantity})`);
+        } else {
+          // Add new item
+          const newItem: ScannedItem = {
+            id: `${decodedText}-${Date.now()}`,
+            barcode: decodedText,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            timestamp: new Date()
+          };
+          updatedItems = [...currentItems, newItem];
+          setScanMessage(`Added ${product.name} to cart`);
+        }
+        
+        // Calculate new total with updated items
+        const newTotal = updatedItems.reduce((sum, item) => {
+          return sum + (item.price * item.quantity);
+        }, 0);
+        setTotal(newTotal);
+        
+        return updatedItems;
+      });
       
     } else {
       setScanMessage(`Product not found for barcode: ${decodedText}`);
@@ -96,7 +123,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
     
     // Clear message after 3 seconds
     setTimeout(() => setScanMessage(''), 3000);
-  }, [scannedItems]);
+  }, []);
 
   const handleScanError = useCallback((error: string) => {
     console.log('Scan error:', error);
@@ -105,7 +132,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
   const toggleScanner = () => {
     setIsScannerActive(!isScannerActive);
     if (!isScannerActive) {
-      setScanMessage('Scanner activated - point camera at barcode');
+      
     } else {
       setScanMessage('Scanner deactivated');
     }
@@ -136,16 +163,23 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
     setTotal(newTotal);
   };
 
+  const handleQuantityInputChange = (id: string, value: string) => {
+    const newQuantity = parseInt(value) || 0;
+    if (newQuantity > 0) {
+      updateQuantity(id, newQuantity);
+    }
+  };
+
   const clearCart = () => {
     setScannedItems([]);
     setTotal(0);
     setScanMessage('Cart cleared');
   };
 
-  const handleManualBarcodeSubmit = (e: React.FormEvent) => {
+  const handleManualBarcodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (manualBarcode.trim()) {
-      handleScanSuccess(manualBarcode.trim(), null);
+      await handleScanSuccess(manualBarcode.trim(), null);
       setManualBarcode('');
     }
   };
@@ -253,29 +287,49 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
                         <p className="price">₱{item.price.toFixed(2)} each</p>
                       </div>
                       <div className="item-controls">
-                        <div className="quantity-controls">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="qty-btn"
-                          >
-                            <i className="bi-dash"></i>
-                          </button>
-                          <span className="quantity">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="qty-btn"
-                          >
-                            <i className="bi-plus"></i>
-                          </button>
+                        <div className="quantity-section">
+                          <div className="quantity-header">
+                            <span className="quantity-label">Qty: {item.quantity}</span>
+                            <div className="quantity-badge">
+                              <span className="qty-number">{item.quantity}</span>
+                              <span className="qty-unit">pcs</span>
+                            </div>
+                          </div>
+                          <div className="quantity-controls">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="qty-btn decrease"
+                              title="Decrease quantity"
+                            >
+                              -
+                            </button>
+                            <input
+                              type="number"
+                              value={item.quantity}
+                              onChange={(e) => handleQuantityInputChange(item.id, e.target.value)}
+                              className="quantity-input"
+                              min="1"
+                              max="999"
+                            />
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="qty-btn increase"
+                              title="Increase quantity"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                         <div className="item-total">
-                          ₱{(item.price * item.quantity).toFixed(2)}
+                          <span className="total-label">Subtotal:</span>
+                          <span className="total-amount">₱{(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                         <button 
                           onClick={() => removeItem(item.id)}
                           className="remove-btn"
+                          title="Remove item from cart"
                         >
-                          <i className="bi-x-circle"></i>
+                          ×
                         </button>
                       </div>
                     </div>
