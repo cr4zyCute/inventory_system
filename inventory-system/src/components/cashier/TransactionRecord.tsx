@@ -4,9 +4,55 @@ import type { Transaction, TransactionStatus, PaymentFilter } from './types';
 import Receipt from './Receipt.jsx';
 import './css/TransactionRecord.css';
 
+// API functions for transactions
+const fetchTransactions = async (): Promise<Transaction[]> => {
+  try {
+    const response = await fetch('/api/transactions');
+    if (!response.ok) {
+      throw new Error('Failed to fetch transactions');
+    }
+    const result = await response.json();
+    
+    // The backend returns { success: true, data: [...] } format
+    const transactions = result.data || result;
+    
+    // Transform database data to match our Transaction interface
+    return transactions.map((dbTransaction: any) => ({
+      id: dbTransaction.transactionId,
+      date: new Date(dbTransaction.createdAt).toLocaleDateString(),
+      time: new Date(dbTransaction.createdAt).toLocaleTimeString(),
+      cashier: dbTransaction.cashierName,
+      items: dbTransaction.items?.length || 0,
+      total: dbTransaction.totalAmount,
+      paymentMethod: dbTransaction.paymentMethod,
+      status: dbTransaction.status === 'completed' ? 'Completed' : 
+              dbTransaction.status === 'refunded' ? 'Refunded' : 'Pending',
+      lineItems: dbTransaction.items?.map((item: any) => ({
+        name: item.product?.name || 'Unknown Product',
+        quantity: item.quantity,
+        price: item.unitPrice
+      })) || []
+    }));
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
+    return [];
+  }
+};
+
+const deleteTransaction = async (transactionId: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`/api/transactions/${transactionId}`, {
+      method: 'DELETE',
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error deleting transaction:', error);
+    return false;
+  }
+};
+
 const TransactionHistory: React.FC = () => {
-  // Sample data - replace with actual database data later
-  const [transactions] = useState<Transaction[]>([
+  const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: 'TXN001',
       date: '2024-01-15',
@@ -87,6 +133,27 @@ const TransactionHistory: React.FC = () => {
   const [dropdownPosition, setDropdownPosition] = useState<{ top: number; right: number } | null>(null);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [showReceiptPreview, setShowReceiptPreview] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load transactions on component mount
+  useEffect(() => {
+    const loadTransactions = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await fetchTransactions();
+        setTransactions(data);
+      } catch (err) {
+        setError('Failed to load transactions');
+        console.error('Error loading transactions:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTransactions();
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -231,13 +298,34 @@ const TransactionHistory: React.FC = () => {
     setDropdownPosition(null);
   };
 
-  const handleDeleteTransaction = (transaction: Transaction) => {
+  const handleDeleteTransaction = async (transaction: Transaction) => {
     if (confirm(`Are you sure you want to delete transaction ${transaction.id}?`)) {
-      // Implement delete logic here
-      console.log('Deleting transaction:', transaction.id);
-      // For now, just close the dropdown
+      setIsLoading(true);
+      const success = await deleteTransaction(transaction.id);
+      
+      if (success) {
+        // Remove transaction from local state
+        setTransactions(prev => prev.filter(t => t.id !== transaction.id));
+        alert('Transaction deleted successfully');
+      } else {
+        alert('Failed to delete transaction');
+      }
+      
       setActiveDropdown(null);
       setDropdownPosition(null);
+      setIsLoading(false);
+    }
+  };
+
+  const refreshTransactions = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchTransactions();
+      setTransactions(data);
+    } catch (err) {
+      setError('Failed to refresh transactions');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -350,6 +438,15 @@ const TransactionHistory: React.FC = () => {
       </div>
 
       <div className="controls-container">
+        <button 
+          onClick={refreshTransactions}
+          disabled={isLoading}
+          className="refresh-button"
+        >
+          <i className={`bi-arrow-clockwise ${isLoading ? 'spinning' : ''}`}></i>
+          {isLoading ? 'Loading...' : 'Refresh'}
+        </button>
+        
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as TransactionStatus)}
@@ -412,7 +509,24 @@ const TransactionHistory: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredTransactions.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={8} className="loading-state">
+                  <i className="bi-arrow-repeat spinning"></i>
+                  <span>Loading transactions...</span>
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={8} className="error-state">
+                  <i className="bi-exclamation-triangle"></i>
+                  <span>{error}</span>
+                  <button onClick={refreshTransactions} className="retry-button">
+                    Retry
+                  </button>
+                </td>
+              </tr>
+            ) : filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction) => (
                 <tr
                   key={transaction.id}

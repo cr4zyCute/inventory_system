@@ -186,20 +186,7 @@ const Reports: React.FC = () => {
         </button>
       </div>
 
-      <div className="report-actions">
-        <button className="action-button" onClick={handleExportPDF} disabled={!reportGenerated}>
-          <i className="bi-file-earmark-pdf"></i>
-          Download PDF
-        </button>
-        <button className="action-button" onClick={handleExportExcel} disabled={!reportGenerated}>
-          <i className="bi-file-earmark-excel"></i>
-          Download Excel
-        </button>
-        <button className="action-button" onClick={handlePrint} disabled={!reportGenerated}>
-          <i className="bi-printer"></i>
-          Print Report
-        </button>
-      </div>
+
 
       <div className="reports-body">
         {renderReportContent()}

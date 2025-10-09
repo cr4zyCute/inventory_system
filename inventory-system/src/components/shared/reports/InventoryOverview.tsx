@@ -7,20 +7,65 @@ import autoTable from 'jspdf-autotable';
 import '../css/report.css';
 import '../css/InventoryOverview.css';
 
-const formatCurrency = (amount) => {
+// Extend jsPDF interface for autoTable
+declare module 'jspdf' {
+  interface jsPDF {
+    lastAutoTable: {
+      finalY: number;
+    };
+  }
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  stockQuantity: number;
+  minStockLevel: number;
+  createdAt: string;
+}
+
+interface InventoryActivity {
+  id: string;
+  timestamp: string;
+  type: 'ADD_NEW' | 'ADD_STOCK' | 'EDIT_PRODUCT' | 'SCAN_ADD' | 'MANUAL_ADD';
+  productName: string;
+  productBarcode: string;
+  details: {
+    quantityAdded?: number;
+    oldStock?: number;
+    newStock?: number;
+    changes?: Record<string, { old: any; new: any }>;
+  };
+  user: string;
+  method: 'SCAN' | 'MANUAL';
+}
+
+interface InventoryStats {
+  totalProducts: number;
+  lowStockItems: number;
+  outOfStockItems: number;
+  totalValue: number;
+  newItems: Product[];
+  stockUpdates: InventoryActivity[];
+  zeroStockItems: Product[];
+}
+
+const formatCurrency = (amount: number): string => {
   return `₱${amount.toLocaleString()}`;
 };
 
-const formatCurrencyForPDF = (amount) => {
+const formatCurrencyForPDF = (amount: number): string => {
   return `PHP ${amount.toLocaleString()}`;
 };
 
-const InventoryOverview = () => {
+const InventoryOverview: React.FC = () => {
   const { user } = useAuth();
   const { data: products = [], isLoading: productsLoading } = useProducts();
-  const { data: activities = [], isLoading: activitiesLoading } = useInventoryActivity();
+  const { activities = [] } = useInventoryActivity();
+  const activitiesLoading = false; // Since useInventoryActivity doesn't return loading state
   const [isExporting, setIsExporting] = useState(false);
-  const [inventoryStats, setInventoryStats] = useState({
+  const [inventoryStats, setInventoryStats] = useState<InventoryStats>({
     totalProducts: 0,
     lowStockItems: 0,
     outOfStockItems: 0,
@@ -48,7 +93,7 @@ const InventoryOverview = () => {
 
       // Get recent stock updates from activities
       const stockUpdates = activities
-        .filter(a => a.action === 'STOCK_UPDATE' || a.action === 'PRODUCT_ADDED')
+        .filter((a: InventoryActivity) => a.type === 'ADD_STOCK' || a.type === 'ADD_NEW')
         .slice(0, 10); // Get last 10 updates
 
       setInventoryStats(prevStats => {
@@ -232,10 +277,10 @@ const InventoryOverview = () => {
         yPosition += 10;
 
         const stockUpdatesData = inventoryStats.stockUpdates.slice(0, 10).map(activity => [
-          activity.details || `Stock updated for ${activity.productName || 'product'}`,
-          activity.userName || 'System',
-          new Date(activity.createdAt).toLocaleDateString(),
-          activity.action === 'PRODUCT_ADDED' ? 'New Product' : 'Stock Update'
+          `${activity.type === 'ADD_NEW' ? 'Added new product' : 'Updated stock for'} ${activity.productName}`,
+          activity.user || 'System',
+          new Date(activity.timestamp).toLocaleDateString(),
+          activity.type === 'ADD_NEW' ? 'New Product' : 'Stock Update'
         ]);
 
         autoTable(doc, {
@@ -250,7 +295,7 @@ const InventoryOverview = () => {
       }
 
       // Footer
-      const totalPages = doc.internal.getNumberOfPages();
+      const totalPages = (doc as any).internal.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
         doc.setFontSize(8);
@@ -420,24 +465,24 @@ const InventoryOverview = () => {
                 {inventoryStats.stockUpdates.map((activity, index) => (
                   <div key={index} className="row-item">
                     <div className="row-icon">
-                      <i className={activity.action === 'PRODUCT_ADDED' ? 'bi-plus-circle' : 'bi-arrow-up-circle'} 
-                         style={{ color: activity.action === 'PRODUCT_ADDED' ? '#28a745' : '#007bff' }}></i>
+                      <i className={activity.type === 'ADD_NEW' ? 'bi-plus-circle' : 'bi-arrow-up-circle'} 
+                         style={{ color: activity.type === 'ADD_NEW' ? '#28a745' : '#007bff' }}></i>
                     </div>
                     <div className="row-content">
                       <div className="row-main">
-                        <span className="row-title">{activity.details || `Stock updated for ${activity.productName || 'product'}`}</span>
+                        <span className="row-title">{activity.type === 'ADD_NEW' ? 'Added new product' : 'Updated stock for'} {activity.productName}</span>
                         <span className="row-badge">
-                          {activity.action === 'PRODUCT_ADDED' ? 'New Product' : 'Stock Update'}
+                          {activity.type === 'ADD_NEW' ? 'New Product' : 'Stock Update'}
                         </span>
                       </div>
                       <div className="row-meta">
                         <span className="row-user">
                           <i className="bi-person" style={{ marginRight: '4px' }}></i>
-                          {activity.userName}
+                          {activity.user}
                         </span>
                         <span className="row-time">
                           <i className="bi-clock" style={{ marginRight: '4px' }}></i>
-                          {new Date(activity.createdAt).toLocaleString()}
+                          {new Date(activity.timestamp).toLocaleString()}
                         </span>
                       </div>
                     </div>

@@ -382,8 +382,8 @@ const Receipt = ({ items, total, onClose, onPrint }) => {
             <div className="receipt-header">
               <div className="shop-name">TINDAHAN Store</div>
               <div className="shop-details">
-                Address: Lorem Ipsum, 23-10<br/>
-                Telp. 11223344
+                Address: sa puso mo, 23-10<br/>
+                Telp. 0922ayawugtoo
               </div>
             </div>
 
