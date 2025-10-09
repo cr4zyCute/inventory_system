@@ -54,3 +54,25 @@ export interface PaymentResult {
 export type ScannerStatus = 'idle' | 'scanning' | 'paused' | 'error';
 
 export type PaymentMethod = 'cash' | 'card' | 'mobile' | 'other';
+
+// Transaction types
+export interface TransactionLineItem {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Transaction {
+  id: string;
+  date: string;
+  time: string;
+  cashier: string;
+  items: number;
+  total: number;
+  paymentMethod: string;
+  status: 'Completed' | 'Refunded' | 'Pending';
+  lineItems?: TransactionLineItem[];
+}
+
+export type TransactionStatus = 'All' | 'Completed' | 'Refunded' | 'Pending';
+export type PaymentFilter = 'All' | 'Cash' | 'Card';

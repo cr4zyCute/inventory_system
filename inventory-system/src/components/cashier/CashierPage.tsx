@@ -6,6 +6,7 @@ import BarcodeScanner from './BarcodeScanner';
 import PhoneScanner from './scan.jsx';
 // @ts-ignore - JSX components  
 import TransactionDisplay from './transaction.jsx';
+import TransactionHistory from './TransactionRecord';
 import Reports from '../shared/report';
 import './BarcodeScanner.css';
 import './CashierPage.css';
@@ -26,12 +27,7 @@ interface Product {
   stock: number;
 }
 
-interface CashierPageProps {
-  onBackToHome?: () => void;
-}
-
-const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
-  const { user } = useAuth();
+const CashierPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('pos');
   const [isScannerActive, setIsScannerActive] = useState(false);
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
@@ -373,15 +369,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
           </section>
         );
       case 'transactions':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-credit-card"></i> Transactions</h2>
-            <p>View transaction history and payment records.</p>
-            <div className="placeholder-content">
-              <p>Transaction history interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <TransactionHistory />;
       case 'phone-scanner':
         return <PhoneScanner />;
       case 'transaction-display':

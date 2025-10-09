@@ -102,6 +102,7 @@
   padding: 16px;
   border-radius: 8px;
   justify-content: flex-start;
+  border-color: #000000;
 }
 
 .search-container {
@@ -178,7 +179,7 @@
 
 .filter-select {
   padding: 10px 12px;
-  border: 1px solid #000000;
+  border: 1px solid #000000 !important;
   border-radius: 8px;
   background-color: #ffffff;
   color: #000000;
@@ -645,6 +646,7 @@
 /* Search Input Enhancement */
 .search-input {
   padding-right: 40px; /* Make room for clear button */
+  border: 1px solid #000000 !important;
 }
 
 /* Improved table cell spacing for dates */

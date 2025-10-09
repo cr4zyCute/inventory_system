@@ -42,10 +42,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     { id: 'transactions', label: 'Transactions', icon: 'bi-credit-card', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
     
     // Cashier Only
-    { id: 'scanner', label: 'Barcode Scanner', icon: 'bi-upc-scan', roles: ['cashier'], section: 'operations' },
-    { id: 'phone-scanner', label: 'Phone Scanner', icon: 'bi-phone', roles: ['cashier'], section: 'operations' },
+    // { id: 'scanner', label: 'Barcode Scanner', icon: 'bi-upc-scan', roles: ['cashier'], section: 'operations' },
+    { id: 'phone-scanner', label: 'Scanner', icon: 'bi-phone', roles: ['cashier'], section: 'operations' },
     { id: 'transaction-display', label: 'Transaction Display', icon: 'bi-display', roles: ['cashier'], section: 'operations' },
-    { id: 'quick-sale', label: 'Quick Sale', icon: 'bi-lightning', roles: ['cashier'], section: 'operations' },
+    // { id: 'quick-sale', label: 'Quick Sale', icon: 'bi-lightning', roles: ['cashier'], section: 'operations' },
   ];
 
   // Filter menu items based on user role

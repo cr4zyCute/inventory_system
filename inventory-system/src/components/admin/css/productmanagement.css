@@ -537,6 +537,7 @@
   padding: 16px;
   border-radius: 8px;
   justify-content: flex-start;
+  border-color: #000000;
 }
 
 /* Refresh Button */
@@ -703,6 +704,7 @@
 .table-row {
   border-bottom: 1px solid #000000;
   background-color: #ffffff;
+ 
 }
 
 .table-row.inactive {
