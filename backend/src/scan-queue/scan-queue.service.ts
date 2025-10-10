@@ -13,7 +13,7 @@ export class ScanQueueService {
   private lastRetrievedTimestamp: string | null = null;
 
   addScan(scanData: ScanData) {
-    console.log('📱 Backend: Received scan data:', scanData);
+    console.log('Backend: Received scan data:', scanData);
     this.latestScan = scanData;
     return { success: true, data: scanData };
   }
@@ -22,7 +22,7 @@ export class ScanQueueService {
     // Only return scan if it hasn't been retrieved yet
     if (this.latestScan && this.latestScan.timestamp !== this.lastRetrievedTimestamp) {
       this.lastRetrievedTimestamp = this.latestScan.timestamp;
-      console.log('💻 Backend: Sending scan to computer:', this.latestScan);
+      console.log('Backend: Sending scan to computer:', this.latestScan);
       return { success: true, data: this.latestScan };
     }
     return { success: true, data: null };

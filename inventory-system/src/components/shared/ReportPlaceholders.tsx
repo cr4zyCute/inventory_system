@@ -609,11 +609,7 @@ export const OverviewDashboard: React.FC = () => {
           margin: '0 0 8px 0',
           textShadow: '0 2px 8px rgba(255, 255, 255, 0.8)'
         }}>Reports Overview</h2>
-        <p style={{ 
-          color: '#333333', 
-          margin: 0,
-          textShadow: '0 1px 3px rgba(255, 255, 255, 0.8)'
-        }}>Real-time summary of all available reports and key metrics</p>
+        
       </div>
 
       {/* Quick Stats Grid */}

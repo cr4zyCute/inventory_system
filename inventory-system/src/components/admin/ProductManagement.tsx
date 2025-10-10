@@ -677,15 +677,7 @@ const ProductManagement: React.FC = () => {
 
       {/* Controls */}
       <div className="controls-container">
-        <button
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="refresh-button"
-          title="Refresh products table"
-        >
-          <i className={`bi-arrow-clockwise ${isRefreshing ? 'spinning' : ''}`}></i>
-          {isRefreshing ? 'Refreshing...' : 'Refresh'}
-        </button>
+
         
         <select
           value={statusFilter}
@@ -731,6 +723,15 @@ const ProductManagement: React.FC = () => {
             </button>
           )}
         </div>
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="refresh-button"
+          title="Refresh products table"
+        >
+          <i className={`bi-arrow-clockwise ${isRefreshing ? 'spinning' : ''}`}></i>
+          {isRefreshing ? 'Refreshing...' : 'Refresh'}
+        </button>
       </div>
 
       {/* Products Table */}

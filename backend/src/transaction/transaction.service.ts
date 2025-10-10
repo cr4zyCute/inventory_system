@@ -71,6 +71,7 @@ export class TransactionService {
           items: {
             create: transactionData.items.map((item: any) => ({
               productId: item.productId,
+              quantity: item.quantity || 1, // Add the missing quantity field
               unitPrice: item.unitPrice,
               totalPrice: item.totalPrice
             }))
@@ -119,10 +120,10 @@ export class TransactionService {
         }
       });
 
-      console.log(`📊 Retrieved ${transactions.length} transactions${cashierId ? ` for cashier ${cashierId}` : ''}`);
+      console.log(`Retrieved ${transactions.length} transactions${cashierId ? ` for cashier ${cashierId}` : ''}`);
       return transactions;
     } catch (error) {
-      console.error('❌ Error getting transactions:', error);
+      console.error('Error getting transactions:', error);
       throw error;
     }
   }

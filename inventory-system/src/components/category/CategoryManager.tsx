@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
-import { useCategories, type CreateCategoryData, type UpdateCategoryData } from '../../hooks/useCategories';
+import { useCategories, type CreateCategoryData } from '../../hooks/useCategories';
+import Toast from '../shared/Toast';
 import './CategoryManager.css';
 
 const CategoryManager: React.FC = () => {
   const { categories, isLoading, error, createCategory, updateCategory, deleteCategory } = useCategories();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [deletingCategory, setDeletingCategory] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [categoryProducts, setCategoryProducts] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [formData, setFormData] = useState<CreateCategoryData>({ name: '', description: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,14 +29,25 @@ const CategoryManager: React.FC = () => {
         await updateCategory(editingCategory.id, formData);
         setShowEditModal(false);
         setEditingCategory(null);
+        setToast({
+          message: `Category "${formData.name}" updated successfully!`,
+          type: 'success'
+        });
       } else {
         await createCategory(formData);
         setShowAddModal(false);
+        setToast({
+          message: `Category "${formData.name}" created successfully!`,
+          type: 'success'
+        });
       }
       setFormData({ name: '', description: '' });
     } catch (err) {
       console.error('Error saving category:', err);
-      alert(err instanceof Error ? err.message : 'Failed to save category');
+      setToast({
+        message: err instanceof Error ? err.message : 'Failed to save category',
+        type: 'error'
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -39,14 +59,123 @@ const CategoryManager: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to delete the category "${name}"?`)) {
-      try {
-        await deleteCategory(id);
-      } catch (err) {
-        console.error('Error deleting category:', err);
-        alert(err instanceof Error ? err.message : 'Failed to delete category');
+  const handleDelete = (category: any) => {
+    setDeletingCategory(category);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingCategory) return;
+
+    setIsSubmitting(true);
+    try {
+      await deleteCategory(deletingCategory.id);
+      setToast({
+        message: `Category "${deletingCategory.name}" deleted successfully!`,
+        type: 'success'
+      });
+      setShowDeleteModal(false);
+      setDeletingCategory(null);
+    } catch (err) {
+      console.error('Error deleting category:', err);
+      setToast({
+        message: err instanceof Error ? err.message : 'Failed to delete category',
+        type: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeletingCategory(null);
+  };
+
+  const handleCategoryClick = async (category: any) => {
+    setSelectedCategory(category);
+    setShowDetailsModal(true);
+    setIsLoadingProducts(true);
+    setSearchTerm('');
+
+    try {
+      const response = await fetch(`/api/categories/${category.id}/products`);
+      if (response.ok) {
+        const result = await response.json();
+        setCategoryProducts(result.data || result || []);
+      } else {
+        console.error('Failed to fetch category products');
+        setCategoryProducts([]);
+        setToast({
+          message: 'Failed to load category products',
+          type: 'error'
+        });
       }
+    } catch (err) {
+      console.error('Error fetching category products:', err);
+      setCategoryProducts([]);
+      setToast({
+        message: 'Error loading category products',
+        type: 'error'
+      });
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetailsModal(false);
+    setSelectedCategory(null);
+    setCategoryProducts([]);
+    setSearchTerm('');
+  };
+
+  const handleRemoveFromCategory = async (productId: string, productName: string) => {
+    if (!selectedCategory) return;
+
+    try {
+      setIsSubmitting(true);
+      // First, get the current product data
+      const getResponse = await fetch(`/api/products/${productId}`);
+      if (!getResponse.ok) {
+        throw new Error('Failed to fetch product data');
+      }
+      
+      const productResult = await getResponse.json();
+      const currentProduct = productResult.data || productResult;
+      
+      // Update product to remove category assignment using PUT
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...currentProduct,
+          categoryId: null, // Remove category assignment
+        }),
+      });
+
+      if (response.ok) {
+        // Remove product from local state
+        setCategoryProducts(prev => prev.filter(product => product.id !== productId));
+        setToast({
+          message: `"${productName}" removed from category "${selectedCategory.name}"`,
+          type: 'success'
+        });
+      } else {
+        const errorData = await response.text();
+        console.error('API Error:', errorData);
+        throw new Error('Failed to remove product from category');
+      }
+    } catch (err) {
+      console.error('Error removing product from category:', err);
+      setToast({
+        message: 'Failed to remove product from category',
+        type: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -269,7 +398,7 @@ const CategoryManager: React.FC = () => {
         ) : (
           categories.map((category) => (
             <div key={category.id} className="category-card">
-              <div className="category-info">
+              <div className="category-info" onClick={() => handleCategoryClick(category)}>
                 <h4>{category.name}</h4>
                 {category.description && (
                   <p className="category-description">{category.description}</p>
@@ -295,7 +424,7 @@ const CategoryManager: React.FC = () => {
                 </button>
                 <button
                   className="delete-btn"
-                  onClick={() => handleDelete(category.id, category.name)}
+                  onClick={() => handleDelete(category)}
                   title="Delete category"
                 >
                   <i className="bi bi-trash"></i>
@@ -305,6 +434,194 @@ const CategoryManager: React.FC = () => {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && deletingCategory && (
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && handleCancelDelete()}>
+          <div className="modal-content delete-modal">
+            <div className="modal-header">
+              <h3>Delete Category</h3>
+              <button 
+                type="button" 
+                className="modal-close-btn"
+                onClick={handleCancelDelete}
+                disabled={isSubmitting}
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="delete-warning">
+                <i className="bi bi-exclamation-triangle"></i>
+                <p>Are you sure you want to delete the category <strong>"{deletingCategory.name}"</strong>?</p>
+                <p className="warning-text">If this category has products, it will <b> NOT be Deleted.</b></p>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button 
+                type="button" 
+                className="cancel-btn"
+                onClick={handleCancelDelete}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="delete-confirm-btn"
+                onClick={handleConfirmDelete}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <i className="bi bi-arrow-clockwise loading-spin"></i>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-trash"></i>
+                    Delete Category
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Details Modal */}
+      {showDetailsModal && selectedCategory && (
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && handleCloseDetails()}>
+          <div className="modal-content details-modal">
+            <div className="modal-header">
+              <h3>
+                <i className="bi bi-tags"></i>
+                {selectedCategory.name} - Products
+              </h3>
+              <button 
+                type="button" 
+                className="modal-close-btn"
+                onClick={handleCloseDetails}
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              {/* Search Bar */}
+              <div className="search-container">
+                <i className="bi bi-search search-icon"></i>
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="search-clear-button"
+                    title="Clear search"
+                  >
+                    <i className="bi bi-x"></i>
+                  </button>
+                )}
+              </div>
+
+              {/* Category Info */}
+              <div className="category-details-info">
+                <p><strong>Description:</strong> {selectedCategory.description || 'No description'}</p>
+                <p><strong>Total Products:</strong> {categoryProducts.length}</p>
+                
+              </div>
+
+              {/* Products List */}
+              <div className="products-list">
+                {isLoadingProducts ? (
+                  <div className="loading-products">
+                    <i className="bi bi-arrow-clockwise loading-spin"></i>
+                    <p>Loading products...</p>
+                  </div>
+                ) : (
+                  <>
+                    {categoryProducts.filter(product => 
+                      product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      product.barcode?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).length === 0 ? (
+                      <div className="no-products">
+                        <i className="bi bi-box"></i>
+                        <p>{searchTerm ? 'No products match your search' : 'No products in this category'}</p>
+                      </div>
+                    ) : (
+                      <div className="products-table-container">
+                        <table className="products-table">
+                          <thead>
+                            <tr>
+                              <th>Product Name</th>
+                              <th>Barcode</th>
+                              <th>Price</th>
+                              <th>Stock</th>
+                              <th>Added Date</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {categoryProducts
+                              .filter(product => 
+                                product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                product.barcode?.toLowerCase().includes(searchTerm.toLowerCase())
+                              )
+                              .map((product) => (
+                                <tr key={product.id}>
+                                  <td className="product-name">{product.name}</td>
+                                  <td className="product-barcode">
+                                    <code>{product.barcode}</code>
+                                  </td>
+                                  <td className="product-price">₱{product.price?.toFixed(2)}</td>
+                                  <td className="product-stock">
+                                    <span className={`stock-badge ${product.stockQuantity <= product.minStockLevel ? 'low-stock' : 'in-stock'}`}>
+                                      {product.stockQuantity}
+                                    </span>
+                                  </td>
+                                  <td className="product-date">
+                                    {new Date(product.createdAt).toLocaleDateString()}
+                                  </td>
+                                  <td className="product-actions">
+                                    <button
+                                      className="remove-from-category-btn"
+                                      onClick={() => handleRemoveFromCategory(product.id, product.name)}
+                                      disabled={isSubmitting}
+                                      title="Remove from category"
+                                    >
+                                      {/* <i className="bi bi-x-circle"></i> */}remove
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

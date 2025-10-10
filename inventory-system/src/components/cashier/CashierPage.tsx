@@ -8,6 +8,7 @@ import PhoneScanner from './scan.jsx';
 import TransactionDisplay from './transaction.jsx';
 import TransactionHistory from './TransactionRecord';
 import Reports from '../shared/report';
+import ProfilePage from '../admin/ProfilePage';
 import './BarcodeScanner.css';
 import './CashierPage.css';
 
@@ -450,6 +451,8 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
         return <TransactionDisplay />;
       case 'reports':
         return <Reports />;
+      case 'profile':
+        return <ProfilePage />;
       default:
         return (
           <section className="content-section">

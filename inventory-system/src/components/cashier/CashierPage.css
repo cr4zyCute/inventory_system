@@ -1,6 +1,5 @@
 .cashier-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #000000 0%, #333333 100%);
   display: flex;
 }
 

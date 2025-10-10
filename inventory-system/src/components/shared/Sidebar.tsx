@@ -34,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     // Manager & Admin
     { id: 'inventory', label: 'Inventory Management', icon: 'bi-boxes', roles: ['admin', 'manager'], section: 'management' },
     { id: 'categories', label: 'Product Categories', icon: 'bi-tags', roles: ['admin', 'manager'], section: 'management' },
+    // { id: 'analytics', label: 'Dashboard Analytics', icon: 'bi-bar-chart', roles: ['admin'], section: 'management' },
     { id: 'reports', label: 'Reports & Analytics', icon: 'bi-graph-up', roles: ['admin', 'manager'], section: 'management' },
     // { id: 'suppliers', label: 'Suppliers', icon: 'bi-truck', roles: ['admin', 'manager'], section: 'management' },
     
@@ -95,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
       <div className="sidebar-header">
         <div className="sidebar-brand">
           <i className="brand-icon bi-shop"></i>
-          {!isCollapsed && <span className="brand-text">Inventory System</span>}
+          {!isCollapsed && <span className="brand-text">Tindahan Store <br /> Inventory System</span>}
         </div>
         <button 
           className="sidebar-toggle"
@@ -106,7 +107,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
         </button>
       </div>
 
-      <div className="sidebar-user">
+      <div 
+        className="sidebar-user"
+        onClick={() => onItemClick?.('profile')}
+        title={isCollapsed ? 'View Profile' : ''}
+      >
         <div className="user-avatar">
           {user?.firstName?.charAt(0) || <i className="bi-person"></i>}
         </div>

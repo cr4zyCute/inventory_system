@@ -64,7 +64,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: wheat;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0 10px;
+}
+
+.sidebar-user:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .user-avatar {

@@ -538,6 +538,7 @@
   border-radius: 8px;
   justify-content: flex-start;
   border-color: #000000;
+  border: 1px solid #000000 !important;
 }
 
 /* Refresh Button */
@@ -546,32 +547,28 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: #007bff;
+  background: #000000;
   color: #ffffff;
-  border: 1px solid #007bff;
+  border: 1px solid #000000;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
   white-space: nowrap;
+  margin-left: auto;
 }
 
 .refresh-button:hover:not(:disabled) {
-  background: #0056b3;
-  border-color: #0056b3;
-  transform: translateY(-1px);
+  background: #ffffff;
+  color: #000000;
+  border-color: #000000;
 }
 
 .refresh-button:disabled {
-  background: #6c757d;
-  border-color: #6c757d;
+  background: #666666;
+  border-color: #666666;
   cursor: not-allowed;
-  transform: none;
-}
-
-.refresh-button i {
-  font-size: 14px;
 }
 
 .refresh-button .spinning {
@@ -585,10 +582,9 @@
 
 .search-container {
   position: relative;
-  flex: 0 0 auto;
-  width: 320px;
-  min-width: 280px;
-  max-width: 350px;
+  flex: 1;
+  max-width: 400px;
+  margin-right: 16px;
 }
 
 .search-icon {

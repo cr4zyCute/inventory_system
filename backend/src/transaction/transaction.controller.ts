@@ -8,7 +8,7 @@ export class TransactionController {
   @Post()
   async createTransaction(@Body() transactionData: any) {
     try {
-      console.log('📝 Creating transaction:', transactionData);
+      console.log('Creating transaction:', transactionData);
       const transaction = await this.transactionService.createTransaction(transactionData);
       return {
         success: true,
@@ -16,7 +16,7 @@ export class TransactionController {
         message: 'Transaction created successfully'
       };
     } catch (error) {
-      console.error('❌ Error creating transaction:', error);
+      console.error('Error creating transaction:', error);
       throw new HttpException(
         {
           success: false,
@@ -46,7 +46,7 @@ export class TransactionController {
         message: 'Transactions retrieved successfully'
       };
     } catch (error) {
-      console.error('❌ Error getting transactions:', error);
+      console.error('Error getting transactions:', error);
       throw new HttpException(
         {
           success: false,
@@ -77,7 +77,7 @@ export class TransactionController {
         message: 'Transaction retrieved successfully'
       };
     } catch (error) {
-      console.error('❌ Error getting transaction:', error);
+      console.error('Error getting transaction:', error);
       throw new HttpException(
         {
           success: false,
@@ -99,7 +99,7 @@ export class TransactionController {
         message: 'Cashier links fixed successfully'
       };
     } catch (error) {
-      console.error('❌ Error fixing cashier links:', error);
+      console.error('Error fixing cashier links:', error);
       throw new HttpException(
         {
           success: false,

@@ -105,7 +105,7 @@ const Reports: React.FC = () => {
 
   return (
     <div className="reports-container">
-      <div className="reports-header">
+      {/* <div className="reports-header">
         <div className="header-info">
           <h2 className="reports-title">
             <i className="bi-file-earmark-bar-graph"></i>
@@ -117,7 +117,7 @@ const Reports: React.FC = () => {
             {user?.role === "cashier" && "Personal sales performance and transaction history"}
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="reports-controls">
         <div className="control-group">

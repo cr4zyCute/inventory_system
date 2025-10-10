@@ -66,6 +66,7 @@
   margin-bottom: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
+  border: 1px solid #000000 !important;
 }
 
 .manual-barcode-section h3 {
@@ -224,6 +225,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
   overflow: hidden;
+  border: 1px solid #000000 !important;
 }
 
 .cart-header {
@@ -233,6 +235,7 @@
   padding: 24px;
   background: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
+  border: 1px solid #000000 !important;
 }
 
 .cart-header h3 {
@@ -263,6 +266,7 @@
 .cart-items {
   max-height: 400px;
   overflow-y: auto;
+  border: 1px solid #000000 !important;
 }
 
 .empty-cart {

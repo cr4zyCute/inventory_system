@@ -442,14 +442,7 @@ const TransactionHistory: React.FC = () => {
       </div>
 
       <div className="controls-container">
-        <button 
-          onClick={refreshTransactions}
-          disabled={isLoading}
-          className="refresh-button"
-        >
-          <i className={`bi-arrow-clockwise ${isLoading ? 'spinning' : ''}`}></i>
-          {isLoading ? 'Loading...' : 'Refresh'}
-        </button>
+
         
         <select
           value={filterStatus}
@@ -496,6 +489,14 @@ const TransactionHistory: React.FC = () => {
             </button>
           )}
         </div>
+        <button 
+          onClick={refreshTransactions}
+          disabled={isLoading}
+          className="refresh-button"
+        >
+          <i className={`bi-arrow-clockwise ${isLoading ? 'spinning' : ''}`}></i>
+          {isLoading ? 'Loading...' : 'Refresh'}
+        </button>
       </div>
 
       <div className="table-container">
@@ -637,16 +638,6 @@ const TransactionHistory: React.FC = () => {
         </table>
       </div>
 
-      <div className="table-footer">
-        <div className="results-info">
-          Showing {filteredTransactions.length} of {transactions.length} transactions
-        </div>
-        <div className="pagination">
-          <button className="pagination-btn" disabled>Previous</button>
-          <span className="page-info">Page 1 of 1</span>
-          <button className="pagination-btn" disabled>Next</button>
-        </div>
-      </div>
       {renderReceiptPreview()}
     </div>
   );

@@ -103,6 +103,7 @@
   border-radius: 8px;
   justify-content: flex-start;
   border-color: #000000;
+  border: 1px solid #000000 !important;
 }
 
 .search-container {
