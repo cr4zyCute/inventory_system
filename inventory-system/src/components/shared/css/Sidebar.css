@@ -68,6 +68,7 @@
   transition: all 0.2s ease;
   border-radius: 8px;
   margin: 0 10px;
+  color: #ffffff !important;
 }
 
 .sidebar-user:hover {
@@ -99,7 +100,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: whitesmoke;
+  color: whitesmoke !important;
 }
 
 .user-role {
@@ -121,14 +122,14 @@
 }
 
 .section-title {
-  padding: 0 20px 8px 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #cccccc;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 8px;
+  padding: 0 20px 2px 20px;
+  font-size: 0.7rem !important;
+  font-weight: 100 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1px !important;
+  color: #ffffff !important;
+  margin-bottom: 4px !important;
+  opacity: 0.4;
 }
 
 .nav-list {

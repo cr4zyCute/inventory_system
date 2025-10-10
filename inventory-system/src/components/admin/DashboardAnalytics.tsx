@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { useProducts } from '../../hooks/useProducts';
+import UserActivity from './UserActivity';
 import './css/DashboardAnalytics.css';
 
 // Register ChartJS components
@@ -125,7 +126,7 @@ const DashboardAnalytics: React.FC = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [analyticsStats, setAnalyticsStats] = useState<AnalyticsStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeChart, setActiveChart] = useState<'sales' | 'products' | 'inventory'>('sales');
+  const [activeChart, setActiveChart] = useState<'sales' | 'products' | 'inventory' | 'user-activity'>('sales');
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('daily');
 
   useEffect(() => {
@@ -659,6 +660,12 @@ const DashboardAnalytics: React.FC = () => {
         >
           <i className="bi-boxes"></i> Inventory Analytics
         </button>
+        <button 
+          className={`nav-btn ${activeChart === 'user-activity' ? 'active' : ''}`}
+          onClick={() => setActiveChart('user-activity')}
+        >
+          <i className="bi-people"></i> User Activity
+        </button>
       </div>
 
       {/* Charts Section */}
@@ -872,6 +879,12 @@ const DashboardAnalytics: React.FC = () => {
               </div>
             </div>
           </>
+        )}
+
+        {activeChart === 'user-activity' && (
+          <div className="user-activity-section">
+            <UserActivity />
+          </div>
         )}
       </div>
 
