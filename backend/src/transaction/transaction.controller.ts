@@ -29,11 +29,16 @@ export class TransactionController {
   }
 
   @Get()
-  async getTransactions(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+  async getTransactions(
+    @Query('limit') limit?: string, 
+    @Query('offset') offset?: string,
+    @Query('cashierId') cashierId?: string
+  ) {
     try {
       const transactions = await this.transactionService.getTransactions(
         limit ? parseInt(limit) : undefined,
-        offset ? parseInt(offset) : undefined
+        offset ? parseInt(offset) : undefined,
+        cashierId
       );
       return {
         success: true,
@@ -77,6 +82,28 @@ export class TransactionController {
         {
           success: false,
           message: 'Failed to get transaction',
+          error: error.message
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  @Post('fix-cashier-links')
+  async fixCashierLinks() {
+    try {
+      const result = await this.transactionService.fixCashierLinks();
+      return {
+        success: true,
+        data: result,
+        message: 'Cashier links fixed successfully'
+      };
+    } catch (error) {
+      console.error('❌ Error fixing cashier links:', error);
+      throw new HttpException(
+        {
+          success: false,
+          message: 'Failed to fix cashier links',
           error: error.message
         },
         HttpStatus.INTERNAL_SERVER_ERROR

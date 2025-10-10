@@ -21,9 +21,19 @@ export class UserService {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
-    });
+    try {
+      console.log('💾 Creating user in database with data:', data);
+      
+      const user = await this.prisma.user.create({
+        data,
+      });
+      
+      console.log('✅ User created in database:', user.id);
+      return user;
+    } catch (error) {
+      console.error('❌ Error in user service create:', error);
+      throw error;
+    }
   }
 
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {

@@ -2,12 +2,24 @@ import React, { useEffect, useState } from 'react';
 import type { Transaction, TransactionStatus, PaymentFilter } from './types';
 // @ts-ignore - Receipt.jsx is a JavaScript file
 import Receipt from './Receipt.jsx';
+import { useAuth } from '../../contexts/AuthContext';
 import './css/TransactionRecord.css';
 
 // API functions for transactions
-const fetchTransactions = async (): Promise<Transaction[]> => {
+const fetchTransactions = async (user?: any): Promise<Transaction[]> => {
   try {
-    const response = await fetch('/api/transactions');
+    // Build query parameters based on user role
+    let url = '/api/transactions';
+    if (user && user.role && user.role.toString().toUpperCase() === 'CASHIER') {
+      // Cashiers only see their own transactions
+      url += `?cashierId=${user.id}`;
+      console.log(`🔒 Filtering transactions for cashier: ${user.firstName} ${user.lastName} (ID: ${user.id})`);
+    } else {
+      console.log('👥 Loading all transactions for manager/admin');
+    }
+    // Managers and Admins see all transactions (no filter)
+    
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch transactions');
     }
@@ -16,19 +28,52 @@ const fetchTransactions = async (): Promise<Transaction[]> => {
     // The backend returns { success: true, data: [...] } format
     const transactions = result.data || result;
     
-    // Transform database data to match our Transaction interface
-    return transactions.map((dbTransaction: any) => ({
+    // Auto-fix unknown cashiers in the background
+    const unknownTransactions = transactions.filter((t: any) => 
+      !t.cashierId || t.cashierName === 'Unknown'
+    );
+    
+    if (unknownTransactions.length > 0) {
+      console.log(`🔧 Auto-fixing ${unknownTransactions.length} transactions with unknown cashiers...`);
+      // Call fix endpoint in background without waiting
+      fetch('/api/transactions/fix-cashier-links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      }).catch(err => console.log('Auto-fix failed:', err));
+    }
+    
+    // Remove duplicates based on transaction ID AND also check for duplicate amounts/times
+    const uniqueTransactions = transactions.filter((transaction: any, index: number, self: any[]) => {
+      // First check by transaction ID
+      const firstOccurrenceById = self.findIndex((t: any) => t.transactionId === transaction.transactionId);
+      if (index !== firstOccurrenceById) return false;
+      
+      // Also remove transactions with same amount and similar timestamp (within 1 minute)
+      const duplicateByAmountTime = self.find((t: any, i: number) => {
+        if (i >= index) return false; // Only check previous transactions
+        if (t.totalAmount !== transaction.totalAmount) return false;
+        
+        const timeDiff = Math.abs(new Date(t.createdAt).getTime() - new Date(transaction.createdAt).getTime());
+        return timeDiff < 60000; // Within 1 minute
+      });
+      
+      return !duplicateByAmountTime;
+    });
+
+
+    // Transform database data to match our Transaction interface using Prisma schema fields
+    return uniqueTransactions.map((dbTransaction: any) => ({
       id: dbTransaction.transactionId,
       date: new Date(dbTransaction.createdAt).toLocaleDateString(),
       time: new Date(dbTransaction.createdAt).toLocaleTimeString(),
-      cashier: dbTransaction.cashierName,
+      cashier: dbTransaction.cashierName || 
+               (dbTransaction.cashier ? `${dbTransaction.cashier.firstName} ${dbTransaction.cashier.lastName}` : 'System'),
       items: dbTransaction.items?.length || 0,
       total: dbTransaction.totalAmount,
       paymentMethod: dbTransaction.paymentMethod,
-      status: dbTransaction.status === 'completed' ? 'Completed' : 
-              dbTransaction.status === 'refunded' ? 'Refunded' : 'Pending',
+      status: dbTransaction.status.charAt(0).toUpperCase() + dbTransaction.status.slice(1),
       lineItems: dbTransaction.items?.map((item: any) => ({
-        name: item.product?.name || 'Unknown Product',
+        name: item.product?.name || item.product?.description || 'Product',
         quantity: item.quantity,
         price: item.unitPrice
       })) || []
@@ -52,79 +97,8 @@ const deleteTransaction = async (transactionId: string): Promise<boolean> => {
 };
 
 const TransactionHistory: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 'TXN001',
-      date: '2024-01-15',
-      time: '10:30 AM',
-      cashier: 'John Doe',
-      items: 5,
-      total: 125.50,
-      paymentMethod: 'Cash',
-      status: 'Completed',
-      lineItems: [
-        { name: 'Milk Tea', quantity: 2, price: 35.25 },
-        { name: 'Brown Sugar Cake', quantity: 1, price: 45.0 },
-        { name: 'Bottled Water', quantity: 2, price: 5.0 }
-      ]
-    },
-    {
-      id: 'TXN002',
-      date: '2024-01-15',
-      time: '11:15 AM',
-      cashier: 'Jane Smith',
-      items: 3,
-      total: 89.25,
-      paymentMethod: 'Card',
-      status: 'Completed',
-      lineItems: [
-        { name: 'Frozen Yogurt', quantity: 2, price: 28.0 },
-        { name: 'Granola Bar', quantity: 1, price: 33.25 }
-      ]
-    },
-    {
-      id: 'TXN003',
-      date: '2024-01-15',
-      time: '02:45 PM',
-      cashier: 'Mike Johnson',
-      items: 8,
-      total: 234.75,
-      paymentMethod: 'Cash',
-      status: 'Completed',
-      lineItems: [
-        { name: 'Assorted Snacks', quantity: 4, price: 20.5 },
-        { name: 'Bottled Soda', quantity: 4, price: 15.19 }
-      ]
-    },
-    {
-      id: 'TXN004',
-      date: '2024-01-15',
-      time: '03:20 PM',
-      cashier: 'Sarah Wilson',
-      items: 2,
-      total: 45.00,
-      paymentMethod: 'Card',
-      status: 'Refunded',
-      lineItems: [
-        { name: 'Gift Card', quantity: 1, price: 25.0 },
-        { name: 'Canvas Tote', quantity: 1, price: 20.0 }
-      ]
-    },
-    {
-      id: 'TXN005',
-      date: '2024-01-15',
-      time: '04:10 PM',
-      cashier: 'John Doe',
-      items: 6,
-      total: 178.90,
-      paymentMethod: 'Cash',
-      status: 'Completed',
-      lineItems: [
-        { name: 'Notebook Set', quantity: 3, price: 25.3 },
-        { name: 'Gel Pen Pack', quantity: 3, price: 14.0 }
-      ]
-    }
-  ]);
+  const { user } = useAuth();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<TransactionStatus>('All');
@@ -142,7 +116,7 @@ const TransactionHistory: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await fetchTransactions();
+        const data = await fetchTransactions(user);
         setTransactions(data);
       } catch (err) {
         setError('Failed to load transactions');
@@ -152,8 +126,10 @@ const TransactionHistory: React.FC = () => {
       }
     };
 
-    loadTransactions();
-  }, []);
+    if (user) {
+      loadTransactions();
+    }
+  }, [user?.id]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -170,14 +146,25 @@ const TransactionHistory: React.FC = () => {
     };
   }, [activeDropdown]);
 
-  // Filter transactions based on search and filters
+  // Filter transactions based on search, filters, and cashier role
   const filteredTransactions = transactions.filter(transaction => {
     const matchesSearch = transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          transaction.cashier.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'All' || transaction.status === filterStatus;
     const matchesPayment = filterPayment === 'All' || transaction.paymentMethod === filterPayment;
     
-    return matchesSearch && matchesStatus && matchesPayment;
+    // Cashier role filtering
+    let matchesCashier = true;
+    if (user && user.role && user.role.toString().toUpperCase() === 'CASHIER') {
+      const userFullName = `${user.firstName} ${user.lastName}`;
+      matchesCashier = transaction.cashier === userFullName || 
+                      transaction.cashier === user.username ||
+                      transaction.cashier === `${user.firstName}  ${user.lastName}` || // Handle double space
+                      transaction.cashier.includes(user.firstName);
+    }
+    // Admins and Managers see all transactions (matchesCashier stays true)
+    
+    return matchesSearch && matchesStatus && matchesPayment && matchesCashier;
   });
 
   const getStatusClass = (status: Transaction['status']): string => {
@@ -320,7 +307,7 @@ const TransactionHistory: React.FC = () => {
   const refreshTransactions = async () => {
     setIsLoading(true);
     try {
-      const data = await fetchTransactions();
+      const data = await fetchTransactions(user);
       setTransactions(data);
     } catch (err) {
       setError('Failed to refresh transactions');
@@ -328,6 +315,8 @@ const TransactionHistory: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+
 
   const renderReceiptPreview = () => {
     if (!selectedTransaction || !showReceiptPreview) {
@@ -339,14 +328,7 @@ const TransactionHistory: React.FC = () => {
       quantity: item.quantity,
       price: item.price,
       barcode: 'N/A'
-    })) || [
-      {
-        name: `Transaction ${selectedTransaction.id}`,
-        quantity: selectedTransaction.items,
-        price: selectedTransaction.total / Math.max(selectedTransaction.items, 1),
-        barcode: 'N/A'
-      }
-    ];
+    })) || [];
 
     return (
       <div className="receipt-modal-transaction">
@@ -420,20 +402,42 @@ const TransactionHistory: React.FC = () => {
         <div>
           <h2 className="transaction-record-title">
             <i className="bi-receipt"></i> Transaction History
+            {user?.role?.toString().toUpperCase() === 'CASHIER' && (
+              <span className="cashier-filter-badge">
+                <i className="bi-person"></i> {user.firstName} {user.lastName}
+              </span>
+            )}
           </h2>
-          <p className="transaction-record-subtitle">View and manage transaction records</p>
+          <p className="transaction-record-subtitle">
+            {user?.role?.toString().toUpperCase() === 'CASHIER' 
+              ? 'Your transaction records' 
+              : 'View and manage all transaction records'
+            }
+          </p>
         </div>
         <div className="transaction-stats">
           <div className="stat-card">
-            <span className="stat-number">{transactions.length}</span>
-            <span className="stat-label">Total Transactions</span>
+            <span className="stat-number">{filteredTransactions.length}</span>
+            <span className="stat-label">
+              {user?.role?.toString().toUpperCase() === 'CASHIER' ? 'My Transactions' : 'Total Transactions'}
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-number">
-              ₱{transactions.reduce((sum, t) => sum + t.total, 0).toFixed(2)}
+              ₱{filteredTransactions.reduce((sum, t) => sum + t.total, 0).toFixed(2)}
             </span>
-            <span className="stat-label">Total Sales</span>
+            <span className="stat-label">
+              {user?.role?.toString().toUpperCase() === 'CASHIER' ? 'My Sales' : 'Total Sales'}
+            </span>
           </div>
+          {user?.role?.toString().toUpperCase() === 'CASHIER' && (
+            <div className="stat-card cashier-performance">
+              <span className="stat-number">
+                ₱{filteredTransactions.length > 0 ? (filteredTransactions.reduce((sum, t) => sum + t.total, 0) / filteredTransactions.length).toFixed(2) : '0.00'}
+              </span>
+              <span className="stat-label">Average Sale</span>
+            </div>
+          )}
         </div>
       </div>
 

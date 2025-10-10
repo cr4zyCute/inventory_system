@@ -417,4 +417,156 @@ export class ReportsService {
       salesTrend,
     };
   }
+
+  // async getUserActivityReport(startDate?: string, endDate?: string) {
+  //   const start = startDate ? new Date(startDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  //   const end = endDate ? new Date(endDate) : new Date();
+  //   end.setHours(23, 59, 59, 999);
+
+  //   // Get all active users with their last login and transaction counts
+  //   const users = await this.prisma.user.findMany({
+  //     where: { isActive: true },
+  //     include: {
+  //       transactions: {
+  //         where: {
+  //           createdAt: {
+  //             gte: start,
+  //             lte: end,
+  //           },
+  //           status: 'completed',
+  //         },
+  //       },
+  //     },
+  //     orderBy: { lastLogin: 'desc' },
+  //   });
+
+  //   // Calculate user metrics
+  //   const totalUsers = users.length;
+  //   const activeUsers = users.filter(user => user.lastLogin && user.lastLogin >= start).length;
+  //   const totalTransactions = users.reduce((sum, user) => sum + user.transactions.length, 0);
+  //   const totalSales = await this.prisma.transaction.aggregate({
+  //     where: {
+  //       createdAt: { gte: start, lte: end },
+  //       status: 'completed',
+  //     },
+  //     _sum: { totalAmount: true },
+  //   });
+
+  //   // Get top performers by transaction count
+  //   const topPerformers = users
+  //     .map(user => ({
+  //       id: user.id,
+  //       name: `${user.firstName} ${user.lastName}`,
+  //       role: user.role,
+  //       email: user.email,
+  //       transactionCount: user.transactions.length,
+  //       totalSales: user.transactions.reduce((sum, t) => sum + t.totalAmount, 0),
+  //       lastLogin: user.lastLogin,
+  //       isActive: user.isActive,
+  //     }))
+  //     .sort((a, b) => b.transactionCount - a.transactionCount)
+  //     .slice(0, 10);
+
+  //   // Get recent user activities (transactions)
+  //   const recentTransactions = await this.prisma.transaction.findMany({
+  //     where: {
+  //       createdAt: { gte: start, lte: end },
+  //       status: 'completed',
+  //     },
+  //     include: {
+  //       cashier: true,
+  //     },
+  //     orderBy: { createdAt: 'desc' },
+  //     take: 20,
+  //   });
+
+  //   const recentActivities = recentTransactions.map(transaction => ({
+  //     id: transaction.id,
+  //     type: 'transaction',
+  //     description: `Processed transaction ${transaction.transactionId}`,
+  //     user: transaction.cashier ? `${transaction.cashier.firstName} ${transaction.cashier.lastName}` : transaction.cashierName,
+  //     userRole: transaction.cashier?.role || 'CASHIER',
+  //     amount: transaction.totalAmount,
+  //     timestamp: transaction.createdAt,
+  //   }));
+
+  //   // Get last login data for all users
+  //   const lastLoginData = users
+  //     .filter(user => user.lastLogin)
+  //     .sort((a, b) => new Date(b.lastLogin!).getTime() - new Date(a.lastLogin!).getTime())
+  //     .slice(0, 10)
+  //     .map(user => ({
+  //       id: user.id,
+  //       name: `${user.firstName} ${user.lastName}`,
+  //       role: user.role,
+  //       lastLogin: user.lastLogin,
+  //     }));
+
+  //   // Get daily activity trend for the last 7 days
+  //   const activityTrend: Array<{
+  //     date: string;
+  //     transactions: number;
+  //     logins: number;
+  //     totalActivity: number;
+  //   }> = [];
+  //   for (let i = 6; i >= 0; i--) {
+  //     const date = new Date();
+  //     date.setDate(date.getDate() - i);
+  //     date.setHours(0, 0, 0, 0);
+  //     const nextDay = new Date(date);
+  //     nextDay.setDate(nextDay.getDate() + 1);
+
+  //     const dayTransactions = await this.prisma.transaction.count({
+  //       where: {
+  //         createdAt: { gte: date, lt: nextDay },
+  //         status: 'completed',
+  //       },
+  //     });
+
+  //     const dayLogins = users.filter(user => 
+  //       user.lastLogin && 
+  //       user.lastLogin >= date && 
+  //       user.lastLogin < nextDay
+  //     ).length;
+
+  //     activityTrend.push({
+  //       date: date.toLocaleDateString('en-US', { weekday: 'short' }),
+  //       transactions: dayTransactions,
+  //       logins: dayLogins,
+  //       totalActivity: dayTransactions + dayLogins,
+  //     });
+  //   }
+
+  //   // Get role distribution
+  //   const roleDistribution = await this.prisma.user.groupBy({
+  //     by: ['role'],
+  //     where: { isActive: true },
+  //     _count: { role: true },
+  //   });
+
+  //   const roleStats = roleDistribution.map(role => ({
+  //     role: role.role,
+  //     count: role._count.role,
+  //     percentage: ((role._count.role / totalUsers) * 100).toFixed(1),
+  //   }));
+
+  //   return {
+  //     summary: {
+  //       totalUsers,
+  //       activeUsers,
+  //       totalTransactions,
+  //       totalSales: totalSales._sum.totalAmount || 0,
+  //       activityRate: totalUsers > 0 ? ((activeUsers / totalUsers) * 100).toFixed(1) : '0',
+  //     },
+  //     topPerformers,
+  //     recentActivities,
+  //     lastLoginData,
+  //     activityTrend,
+  //     roleStats,
+  //     dateRange: {
+  //       start: start.toISOString(),
+  //       end: end.toISOString(),
+  //     },
+  //   };
+  // }
 }

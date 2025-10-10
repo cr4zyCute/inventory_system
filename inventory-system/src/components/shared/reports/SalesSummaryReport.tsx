@@ -70,7 +70,13 @@ const fetchTransactions = async (): Promise<Transaction[]> => {
       id: dbTransaction.transactionId,
       date: new Date(dbTransaction.createdAt).toLocaleDateString(),
       time: new Date(dbTransaction.createdAt).toLocaleTimeString(),
-      cashier: dbTransaction.cashierName,
+      cashier: dbTransaction.cashierName && dbTransaction.cashierName !== 'Unknown' 
+               ? dbTransaction.cashierName
+               : dbTransaction.cashier?.firstName && dbTransaction.cashier?.lastName
+               ? `${dbTransaction.cashier.firstName} ${dbTransaction.cashier.lastName}`
+               : dbTransaction.cashier?.username
+               ? dbTransaction.cashier.username
+               : 'Unknown Cashier',
       items: dbTransaction.items?.length || 0,
       total: dbTransaction.totalAmount,
       paymentMethod: dbTransaction.paymentMethod,

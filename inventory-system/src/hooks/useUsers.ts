@@ -17,6 +17,7 @@ interface UserCreateInput {
   firstName: string;
   lastName: string;
   email: string;
+  username: string;
   password: string;
   role: string;
   isActive: boolean;
@@ -35,6 +36,8 @@ const fetchUsers = async (): Promise<User[]> => {
 };
 
 const createUser = async (userData: UserCreateInput): Promise<User> => {
+  console.log('🚀 Creating user with data:', userData);
+  
   const response = await fetch(`${API_BASE_URL}/api/users`, {
     method: 'POST',
     headers: {
@@ -43,12 +46,22 @@ const createUser = async (userData: UserCreateInput): Promise<User> => {
     body: JSON.stringify(userData),
   });
   
+  console.log('📡 Response status:', response.status);
+  
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ Error response:', errorText);
+    
+    try {
+      const errorData = JSON.parse(errorText);
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    } catch {
+      throw new Error(`Failed to create user: ${response.status} - ${errorText}`);
+    }
   }
   
   const result = await response.json();
+  console.log('✅ User created successfully:', result);
   return result.data;
 };
 

@@ -60,21 +60,35 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: Prisma.UserCreateInput) {
     try {
+      console.log('📝 Creating user with data:', createUserDto);
       const user = await this.userService.create(createUserDto);
+      console.log('✅ User created successfully:', user.id);
       return {
         success: true,
         data: user,
         message: 'User created successfully',
       };
     } catch (error) {
+      console.error('❌ Error creating user:', error);
+      
       if (error.code === 'P2002') {
+        const field = error.meta?.target?.[0] || 'field';
         throw new HttpException(
-          'User with this email or username already exists',
+          {
+            success: false,
+            message: `User with this ${field} already exists`,
+            error: error.message
+          },
           HttpStatus.CONFLICT,
         );
       }
+      
       throw new HttpException(
-        'Failed to create user',
+        {
+          success: false,
+          message: 'Failed to create user',
+          error: error.message || 'Unknown error'
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

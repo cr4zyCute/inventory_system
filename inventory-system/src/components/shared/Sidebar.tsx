@@ -33,13 +33,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     
     // Manager & Admin
     { id: 'inventory', label: 'Inventory Management', icon: 'bi-boxes', roles: ['admin', 'manager'], section: 'management' },
+    { id: 'categories', label: 'Product Categories', icon: 'bi-tags', roles: ['admin', 'manager'], section: 'management' },
     { id: 'reports', label: 'Reports & Analytics', icon: 'bi-graph-up', roles: ['admin', 'manager'], section: 'management' },
-    { id: 'staff', label: 'Staff Management', icon: 'bi-person-badge', roles: ['admin', 'manager'], section: 'management' },
     { id: 'suppliers', label: 'Suppliers', icon: 'bi-truck', roles: ['admin', 'manager'], section: 'management' },
     
     // Cashier, Manager & Admin
-    { id: 'pos', label: 'Point of Sale', icon: 'bi-cart3', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
-    { id: 'transactions', label: 'Transactions', icon: 'bi-credit-card', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
+    // { id: 'pos', label: 'Point of Sale', icon: 'bi-cart3', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
+    { id: 'transactions', label: 'Transaction History', icon: 'bi-receipt', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
     
     // Cashier Only
     // { id: 'scanner', label: 'Barcode Scanner', icon: 'bi-upc-scan', roles: ['cashier'], section: 'operations' },

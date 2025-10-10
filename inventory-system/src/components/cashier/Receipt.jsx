@@ -124,7 +124,8 @@ const Receipt = ({ items, total, onClose, onPrint }) => {
         discountAmount: 0,
         paymentMethod: paymentMethod,
         status: 'completed',
-        cashierId: null,
+        cashierId: user?.id,
+        cashierName: user ? `${user.firstName} ${user.lastName}` : 'Unknown Cashier',
         items: validItems
       };
 

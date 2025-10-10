@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
-import Reports from '../shared/report';
-import ProductManagement from '../admin/ProductManagement';
+import SalesSummaryReport from '../shared/reports/SalesSummaryReport';
+import CategoryManager from '../category/CategoryManager';
+import TransactionHistory from '../cashier/TransactionRecord';
 import './ManagerDashboard.css';
 
 export function ManagerDashboard() {
   const { user } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
-
   const businessStats = [
     { title: 'Daily Sales', value: '₱2,847', icon: 'bi-currency-dollar', trend: '+12%', color: '#059669' },
     { title: 'Total Orders', value: '156', icon: 'bi-clipboard-data', trend: '+8%', color: '#3b82f6' },
@@ -131,17 +131,54 @@ export function ManagerDashboard() {
           </>
         );
       case 'inventory':
-        return <ProductManagement />;
+        return (
+          <section className="content-section">
+            <h2><i className="bi-boxes"></i> Inventory Management</h2>
+            <p>Manage product inventory, stock levels, and product information.</p>
+            <div className="placeholder-content">
+              <p>Inventory management interface will be implemented here.</p>
+            </div>
+          </section>
+        );
+      case 'categories':
+        try {
+          return <CategoryManager />;
+        } catch (error) {
+          return (
+            <section className="content-section">
+              <h2><i className="bi-tags"></i> Product Categories</h2>
+              <div className="error-fallback">
+                <p>⚠️ Error loading Category Manager</p>
+                <p>Please check:</p>
+                <ul>
+                  <li>Backend server is running</li>
+                  <li>Categories table exists in database</li>
+                  <li>API endpoints are accessible</li>
+                </ul>
+                <button onClick={() => window.location.reload()}>Reload Page</button>
+              </div>
+            </section>
+          );
+        }
       case 'reports':
-        return <Reports />;
+        return (
+          <div className="reports-container">
+            <div className="reports-tabs">
+              <button className="tab-btn active">Sales Summary</button>
+              <button className="tab-btn">Financial Report</button>
+              <button className="tab-btn">Inventory Overview</button>
+            </div>
+            <div className="reports-content">
+              <SalesSummaryReport />
+            </div>
+          </div>
+        );
       case 'staff':
         return (
           <section className="content-section">
             <h2><i className="bi-person-badge"></i> Staff Management</h2>
             <p>Manage employee schedules, performance, and staff operations.</p>
-            <div className="placeholder-content">
-              <p>Staff management interface will be implemented here.</p>
-            </div>
+
           </section>
         );
       case 'suppliers':
@@ -165,15 +202,7 @@ export function ManagerDashboard() {
           </section>
         );
       case 'transactions':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-credit-card"></i> Transactions</h2>
-            <p>View and manage all transaction records and payment history.</p>
-            <div className="placeholder-content">
-              <p>Transaction management interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <TransactionHistory />;
       default:
         return (
           <section className="content-section">

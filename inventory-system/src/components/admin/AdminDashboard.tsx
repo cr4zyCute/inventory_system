@@ -3,6 +3,7 @@ import Sidebar from '../shared/Sidebar';
 import UserManagement from './UserManagement';
 import ProductManagement from './ProductManagement';
 import Reports from '../shared/report';
+import CategoryManager from '../category/CategoryManager';
 import './css/AdminDashboard.css';
 
 export function AdminDashboard() {
@@ -104,6 +105,8 @@ export function AdminDashboard() {
         return <UserManagement />;
       case 'inventory':
         return <ProductManagement />;
+      case 'categories':
+        return <CategoryManager />;
       case 'reports':
         return <Reports />;
       case 'system':
@@ -133,6 +136,26 @@ export function AdminDashboard() {
             <p>Manage data backups and recovery operations.</p>
             <div className="placeholder-content">
               <p>Backup management interface will be implemented here.</p>
+            </div>
+          </section>
+        );
+      case 'suppliers':
+        return (
+          <section className="content-section">
+            <h2><i className="bi-truck"></i> Suppliers</h2>
+            <p>Manage suppliers and vendor relationships.</p>
+            <div className="placeholder-content">
+              <p>Supplier management interface will be implemented here.</p>
+            </div>
+          </section>
+        );
+      case 'transactions':
+        return (
+          <section className="content-section">
+            <h2><i className="bi-receipt"></i> Transaction History</h2>
+            <p>View and manage transaction records.</p>
+            <div className="placeholder-content">
+              <p>Transaction history interface will be implemented here.</p>
             </div>
           </section>
         );

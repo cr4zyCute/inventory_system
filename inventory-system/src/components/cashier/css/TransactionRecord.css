@@ -798,3 +798,78 @@
     box-shadow: none;
   }
 }
+
+/* Fix Cashier Button */
+.fix-cashier-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 16px;
+}
+
+.fix-cashier-btn:hover:not(:disabled) {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.fix-cashier-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.fix-cashier-btn i {
+  font-size: 1rem;
+}
+
+.fix-cashier-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Cashier Filter Badge */
+.cashier-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #007bff;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 12px;
+  vertical-align: middle;
+}
+
+.cashier-filter-badge i {
+  font-size: 0.8rem;
+}
+
+/* Cashier Performance Card */
+.stat-card.cashier-performance {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.stat-card.cashier-performance .stat-number {
+  color: white;
+}
+
+.stat-card.cashier-performance .stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}

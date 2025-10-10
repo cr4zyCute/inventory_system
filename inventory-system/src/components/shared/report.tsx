@@ -5,10 +5,8 @@ import SalesSummaryReport from "./reports/SalesSummaryReport";
 import InventoryOverview from "./reports/InventoryOverview";
 import UserActivityReport from "./reports/UserActivityReport";
 import FinancialReport from "./reports/FinancialReport";
-import ProductPerformanceReport from "./reports/ProductPerformanceReport";
-import SystemAnalyticsReport from "./reports/SystemAnalyticsReport";
-import MySalesReport from "./reports/MySalesReport";
 import DailyTransactionsReport from "./reports/DailyTransactionsReport";
+import TransactionReport from "./reports/transactionreports";
 import "./css/report.css";
 
 interface ReportItem {
@@ -32,23 +30,22 @@ const Reports: React.FC = () => {
     const baseReports: Record<string, ReportItem[]> = {
       admin: [
         { id: "sales-summary", name: "Sales Summary", icon: "bi-graph-up" },
+        { id: "transaction-report", name: "Transaction Report", icon: "bi-receipt" },
         { id: "inventory-overview", name: "Inventory Overview", icon: "bi-boxes" },
         { id: "user-activity", name: "User Activity", icon: "bi-people" },
         { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" },
-        { id: "product-performance", name: "Product Performance", icon: "bi-bar-chart" },
-        { id: "system-analytics", name: "System Analytics", icon: "bi-speedometer2" }
+        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" }
       ],
       manager: [
         { id: "sales-summary", name: "Sales Summary", icon: "bi-graph-up" },
+        { id: "transaction-report", name: "Transaction Report", icon: "bi-receipt" },
         { id: "inventory-overview", name: "Inventory Overview", icon: "bi-boxes" },
-        { id: "product-performance", name: "Product Performance", icon: "bi-bar-chart" },
-        { id: "staff-performance", name: "Staff Performance", icon: "bi-person-check" },
-        { id: "low-stock-alert", name: "Low Stock Alert", icon: "bi-exclamation-triangle" }
+        { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" },
+        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" }
       ],
       cashier: [
-        { id: "my-sales", name: "My Sales", icon: "bi-receipt" },
-        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" },
-        { id: "product-lookup", name: "Product Lookup", icon: "bi-search" }
+        { id: "transaction-report", name: "My Transaction Report", icon: "bi-receipt-cutoff" },
+        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" }
       ]
     };
 
@@ -64,17 +61,6 @@ const Reports: React.FC = () => {
     setReportGenerated(false);
   }, [selectedReport, dateRange.startDate, dateRange.endDate]);
 
-  const handleExportPDF = () => {
-    alert("Export to PDF will be available once live data is connected.");
-  };
-
-  const handleExportExcel = () => {
-    alert("Export to Excel will be available once live data is connected.");
-  };
-
-  const handlePrint = () => {
-    alert("Print report will be available once live data is connected.");
-  };
 
   const renderReportContent = (): React.ReactElement => {
     // Show overview dashboard when no report is selected
@@ -97,18 +83,14 @@ const Reports: React.FC = () => {
     switch (selectedReport) {
       case "sales-summary":
         return <SalesSummaryReport />;
+      case "transaction-report":
+        return <TransactionReport />;
       case "inventory-overview":
         return <InventoryOverview />;
       case "user-activity":
         return <UserActivityReport />;
       case "financial-report":
         return <FinancialReport />;
-      case "product-performance":
-        return <ProductPerformanceReport />;
-      case "system-analytics":
-        return <SystemAnalyticsReport />;
-      case "my-sales":
-        return <MySalesReport />;
       case "daily-transactions":
         return <DailyTransactionsReport />;
       default:

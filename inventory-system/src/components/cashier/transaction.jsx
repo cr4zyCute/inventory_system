@@ -452,16 +452,87 @@ const TransactionDisplay = () => {
     setManualBarcode('');
   };
 
-  const processCheckout = () => {
+  const processCheckout = async () => {
     if (scannedItems.length === 0) {
       alert('Cart is empty');
       return;
     }
     
-    // Prepare receipt data
-    setReceiptItems([...scannedItems]);
-    setReceiptTotal(total);
-    setShowReceipt(true);
+    try {
+      console.log('💳 Processing checkout with user:', user);
+      
+      // Get product IDs by barcode for each item
+      const itemsWithProductIds = await Promise.all(
+        scannedItems.map(async (item) => {
+          try {
+            const response = await fetch(`/api/products/barcode/${item.barcode}`);
+            if (response.ok) {
+              const result = await response.json();
+              const product = result.data || result;
+              return {
+                productId: product.id, // Use the actual database product ID
+                quantity: item.quantity,
+                unitPrice: item.price,
+                totalPrice: item.price * item.quantity
+              };
+            } else {
+              console.warn(`Product not found for barcode: ${item.barcode}`);
+              return null;
+            }
+          } catch (error) {
+            console.error(`Error fetching product for barcode ${item.barcode}:`, error);
+            return null;
+          }
+        })
+      );
+
+      // Filter out any null items (products not found)
+      const validItems = itemsWithProductIds.filter(item => item !== null);
+      
+      if (validItems.length === 0) {
+        alert('Error: No valid products found in database');
+        return;
+      }
+
+      // Prepare transaction data with cashier information
+      const transactionData = {
+        transactionId: `TXN-${Date.now()}`,
+        totalAmount: total,
+        paymentMethod: 'cash',
+        status: 'completed',
+        cashierId: user?.id,
+        cashierName: user ? `${user.firstName} ${user.lastName}` : 'Unknown Cashier',
+        items: validItems
+      };
+
+      console.log('💾 Saving transaction data:', transactionData);
+
+      // Save transaction to database
+      const response = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transactionData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Transaction saved successfully:', result);
+        
+        // Show receipt after successful save
+        setReceiptItems([...scannedItems]);
+        setReceiptTotal(total);
+        setShowReceipt(true);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Failed to save transaction:', errorText);
+        alert('Error saving transaction. Please try again.');
+      }
+    } catch (error) {
+      console.error('❌ Error processing checkout:', error);
+      alert('Error processing transaction. Please try again.');
+    }
   };
 
   const handleReceiptClose = () => {

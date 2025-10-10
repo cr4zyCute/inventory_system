@@ -2,9 +2,9 @@ import React, { useState, useCallback, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
 import BarcodeScanner from './BarcodeScanner';
-// @ts-ignore - JSX components
+// @ts-ignore - JSX component
 import PhoneScanner from './scan.jsx';
-// @ts-ignore - JSX components  
+// @ts-ignore - JSX component
 import TransactionDisplay from './transaction.jsx';
 import TransactionHistory from './TransactionRecord';
 import Reports from '../shared/report';
@@ -26,8 +26,14 @@ interface Product {
   price: number;
   stock: number;
 }
+interface CashierPageProps {
+  onBackToHome?: () => void;
+}
 
-const CashierPage: React.FC = () => {
+const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
+  const { user } = useAuth();
+  
+  // Note: onBackToHome and user are available for future use
   const [activeSection, setActiveSection] = useState('pos');
   const [isScannerActive, setIsScannerActive] = useState(false);
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
@@ -128,7 +134,7 @@ const CashierPage: React.FC = () => {
   const toggleScanner = () => {
     setIsScannerActive(!isScannerActive);
     if (!isScannerActive) {
-      
+      setScanMessage('Scanner activated - Ready to scan');
     } else {
       setScanMessage('Scanner deactivated');
     }
@@ -180,16 +186,84 @@ const CashierPage: React.FC = () => {
     }
   };
 
-  const processCheckout = () => {
+  const processCheckout = async () => {
     if (scannedItems.length === 0) {
       setScanMessage('Cart is empty');
       return;
     }
     
-    // Here you would integrate with your payment system
-    alert(`Processing payment for ₱${total.toFixed(2)}`);
-    clearCart();
-    setScanMessage('Transaction completed successfully');
+    try {
+      setScanMessage('Processing transaction...');
+      
+      // Get product IDs by barcode for each item
+      const itemsWithProductIds = await Promise.all(
+        scannedItems.map(async (item) => {
+          try {
+            const response = await fetch(`/api/products/barcode/${item.barcode}`);
+            if (response.ok) {
+              const result = await response.json();
+              const product = result.data || result;
+              return {
+                productId: product.id, // Use the actual database product ID
+                quantity: item.quantity,
+                unitPrice: item.price,
+                totalPrice: item.price * item.quantity
+              };
+            } else {
+              console.warn(`Product not found for barcode: ${item.barcode}`);
+              return null;
+            }
+          } catch (error) {
+            console.error(`Error fetching product for barcode ${item.barcode}:`, error);
+            return null;
+          }
+        })
+      );
+
+      // Filter out any null items (products not found)
+      const validItems = itemsWithProductIds.filter(item => item !== null);
+      
+      if (validItems.length === 0) {
+        setScanMessage('Error: No valid products found');
+        return;
+      }
+
+      // Prepare transaction data with cashier information
+      const transactionData = {
+        transactionId: `TXN-${Date.now()}`,
+        totalAmount: total,
+        paymentMethod: 'cash',
+        status: 'completed',
+        cashierId: user?.id,
+        cashierName: user ? `${user.firstName} ${user.lastName}` : 'Unknown Cashier',
+        items: validItems
+      };
+
+      console.log('💾 Saving transaction:', transactionData);
+
+      // Save transaction to database
+      const response = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transactionData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Transaction saved successfully:', result);
+        setScanMessage('Transaction completed successfully');
+        clearCart();
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Failed to save transaction:', errorText);
+        setScanMessage('Error saving transaction. Please try again.');
+      }
+    } catch (error) {
+      console.error('❌ Error processing checkout:', error);
+      setScanMessage('Error processing transaction. Please try again.');
+    }
   };
 
   const handleSidebarItemClick = (itemId: string) => {

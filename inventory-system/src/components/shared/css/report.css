@@ -47,6 +47,38 @@
   opacity: 0.5;
 }
 
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.loading-spinner i {
+  font-size: 2rem;
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Data Info */
+.data-info {
+  margin-top: 4px;
+}
+
+.data-info small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
 /* Transaction Summary */
 .transaction-summary {
   padding: 20px;
@@ -1119,5 +1151,950 @@
     flex-direction: column;
     gap: 8px;
     text-align: center;
+  }
+}
+
+/* Last Login Table Styles */
+.last-login-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.login-entry {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+  gap: 16px;
+}
+
+.login-entry:last-child {
+  border-bottom: none;
+}
+
+.login-entry:hover {
+  background-color: #f8f9fa;
+}
+
+.login-user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
+  line-height: 1.3;
+}
+
+.user-role {
+  font-size: 0.85rem;
+  color: #666666;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.login-time {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #000000;
+  text-align: center;
+}
+
+.login-date {
+  font-size: 0.9rem;
+  color: #666666;
+  font-weight: 400;
+  text-align: right;
+}
+
+/* Responsive adjustments for Last Login table */
+@media (max-width: 768px) {
+  .login-entry {
+    grid-template-columns: 1fr;
+    padding: 12px 16px;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .user-name {
+    font-size: 0.95rem;
+  }
+  
+  .user-role {
+    font-size: 0.8rem;
+  }
+  
+  .login-time {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  .login-date {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+}
+
+/* User Activity Report Specific Styles */
+.performer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.performer-details {
+  margin-top: 4px;
+}
+
+.performer-details small {
+  color: #666666;
+  font-size: 0.8rem;
+}
+.last-login {
+  font-size: 0.85rem;
+  color: #666666;
+  min-width: 100px;
+}
+
+/* Enhanced Cashier Performance Section */
+.cashier-performance-section {
+  margin-top: 32px;
+}
+
+.section-header {
+  color: #dc3545;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.error-state i {
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Export Header */
+.export-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-info h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 4px 0;
+}
+
+.export-info p {
+  color: #666666;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.export-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Responsive adjustments for User Activity Report */
+@media (max-width: 768px) {
+  .date-range-controls {
+    flex-direction: column;
+    gap: 8px;
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .export-actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .export-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .last-login {
+    text-align: center;
+    min-width: auto;
+  }
+  
+  .performer-info {
+    text-align: center;
+  }
+}
+
+/* Enhanced Cashier Performance Section */
+.cashier-performance-section {
+  margin-top: 32px;
+}
+
+.section-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.section-header h4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.section-header h4 i {
+  color: #f59e0b;
+  font-size: 1.6rem;
+}
+
+.section-subtitle {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.cashier-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+  width: 100%;
+  overflow: visible;
+  align-items: stretch;
+}
+
+.cashier-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  min-height: 200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cashier-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.cashier-card.rank-1 {
+  border-left: 4px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.cashier-card.rank-2 {
+  border-left: 4px solid #6b7280;
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+}
+
+.cashier-card.rank-3 {
+  border-left: 4px solid #d97706;
+  background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.rank-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.rank-number {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.trophy-gold {
+  color: #f59e0b;
+  font-size: 1rem;
+}
+
+.trophy-silver {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.trophy-bronze {
+  color: #d97706;
+  font-size: 1rem;
+}
+
+.cashier-info {
+  flex: 1;
+}
+
+.cashier-card .cashier-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 2px 0;
+}
+
+.cashier-title {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.performance-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+  width: 100%;
+  flex: 1;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  min-height: 50px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cashier-card .metric-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  color: white;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.cashier-card .metric-details {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cashier-card .metric-value {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000000;
+  line-height: 1.2;
+  margin-bottom: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cashier-card .metric-label {
+  display: block;
+  font-size: 0.65rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+
+.performance-bar {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 2px;
+}
+
+.performance-fill {
+  height: 100%;
+  background: #000000;
+  border-radius: 2px;
+  transition: width 0.8s ease;
+  position: relative;
+}
+
+.performance-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@media (max-width: 1200px) {
+  .cashier-performance-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cashier-performance-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .cashier-card {
+    padding: 20px;
+    min-height: auto;
+  }
+  
+  .performance-metrics {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .metric-item {
+    min-height: 50px;
+    padding: 8px;
+  }
+  
+  .cashier-card .metric-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .cashier-card .metric-value {
+    font-size: 0.9rem;
+  }
+}
+
+/* Black and White Transaction Report Theme */
+.transaction-report-container {
+  padding: 24px;
+  min-height: 100vh;
+  background: #f8f9fa;
+  color: #000000;
+}
+
+.transaction-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.header-info {
+  flex: 1;
+}
+
+.report-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.report-title i {
+  color: #000000;
+  font-size: 1.8rem;
+}
+
+.report-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.report-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.meta-item i {
+  color: #000000;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.export-btn, .refresh-btn {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.export-btn:hover:not(:disabled), .refresh-btn:hover:not(:disabled) {
+  background: #333333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.export-btn:disabled, .refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.refresh-btn {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Enhanced Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.metric-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.metric-card.primary {
+  border-left: 4px solid #000000;
+}
+
+.metric-card.secondary {
+  border-left: 4px solid #333333;
+}
+
+.metric-card.tertiary {
+  border-left: 4px solid #666666;
+}
+
+.metric-card.quaternary {
+  border-left: 4px solid #999999;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #000000;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.metric-badge {
+  background: #f8f9fa;
+  color: #000000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #e9ecef;
+}
+
+.metric-content {
+  text-align: left;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.metric-label {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.metric-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.detail-count {
+  font-weight: 600;
+  color: #000000;
+  font-size: 0.875rem;
+}
+
+.detail-text {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+/* Report Sections with Black and White Theme */
+.report-sections {
+  display: grid;
+  gap: 24px;
+}
+
+.report-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.report-section h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+/* Transaction List Styling */
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto auto;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.transaction-item:hover {
+  background: #e9ecef;
+  transform: translateX(4px);
+}
+
+.txn-id {
+  font-weight: 600;
+  color: #000000;
+  font-family: 'Courier New', monospace;
+}
+
+.txn-time, .txn-cashier {
+  color: #495057;
+  font-size: 0.875rem;
+}
+
+.txn-amount {
+  font-weight: 700;
+  color: #000000;
+  font-size: 1rem;
+}
+
+.txn-items {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.txn-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.txn-status.completed {
+  background: #000000;
+  color: #ffffff;
+}
+
+/* Payment Breakdown Styling */
+.payment-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.payment-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.payment-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.payment-method i {
+  font-size: 1.1rem;
+}
+
+.payment-amount {
+  font-weight: 700;
+  color: #000000;
+  font-size: 1.1rem;
+}
+
+.payment-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.payment-fill.cash {
+  background: #000000;
+}
+
+.payment-fill.card {
+  background: #666666;
+}
+
+/* Hourly Chart Styling */
+.hourly-chart {
+  padding: 20px 0;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  height: 120px;
+  margin-bottom: 12px;
+}
+
+.hour-bar {
+  flex: 1;
+  background: #000000;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.hour-bar:hover {
+  background: #333333;
+}
+
+.hour-value {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+.chart-labels {
+  display: flex;
+  gap: 8px;
+}
+
+.chart-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Loading and Error States */
+.loading-state, .error-state, .empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+.loading-state i, .error-state i, .empty-state i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .transaction-report-container {
+    padding: 16px;
+  }
+  
+  .transaction-report-header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .export-btn, .refresh-btn {
+    flex: 1;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .transaction-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    text-align: left;
+  }
+  
+  .report-meta {
+    flex-direction: column;
+    gap: 8px;
   }
 }
