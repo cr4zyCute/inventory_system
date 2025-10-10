@@ -33,15 +33,13 @@ const Reports: React.FC = () => {
         { id: "transaction-report", name: "Transaction Report", icon: "bi-receipt" },
         { id: "inventory-overview", name: "Inventory Overview", icon: "bi-boxes" },
         { id: "user-activity", name: "User Activity", icon: "bi-people" },
-        { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" },
-        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" }
+        { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" }
       ],
       manager: [
         { id: "sales-summary", name: "Sales Summary", icon: "bi-graph-up" },
         { id: "transaction-report", name: "Transaction Report", icon: "bi-receipt" },
         { id: "inventory-overview", name: "Inventory Overview", icon: "bi-boxes" },
-        { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" },
-        { id: "daily-transactions", name: "Daily Transactions", icon: "bi-list-check" }
+        { id: "financial-report", name: "Financial Report", icon: "bi-currency-dollar" }
       ],
       cashier: [
         { id: "transaction-report", name: "My Transaction Report", icon: "bi-receipt-cutoff" },

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from '../shared/Sidebar';
-import SalesSummaryReport from '../shared/reports/SalesSummaryReport';
 import CategoryManager from '../category/CategoryManager';
 import TransactionHistory from '../cashier/TransactionRecord';
+import ProductManagement from '../admin/ProductManagement';
+import Reports from '../shared/report';
 import './ManagerDashboard.css';
 
 export function ManagerDashboard() {
@@ -131,15 +132,7 @@ export function ManagerDashboard() {
           </>
         );
       case 'inventory':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-boxes"></i> Inventory Management</h2>
-            <p>Manage product inventory, stock levels, and product information.</p>
-            <div className="placeholder-content">
-              <p>Inventory management interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <ProductManagement />;
       case 'categories':
         try {
           return <CategoryManager />;
@@ -161,18 +154,7 @@ export function ManagerDashboard() {
           );
         }
       case 'reports':
-        return (
-          <div className="reports-container">
-            <div className="reports-tabs">
-              <button className="tab-btn active">Sales Summary</button>
-              <button className="tab-btn">Financial Report</button>
-              <button className="tab-btn">Inventory Overview</button>
-            </div>
-            <div className="reports-content">
-              <SalesSummaryReport />
-            </div>
-          </div>
-        );
+        return <Reports />;
       case 'staff':
         return (
           <section className="content-section">

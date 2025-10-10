@@ -27,15 +27,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     
     // Admin Only
     { id: 'users', label: 'User Management', icon: 'bi-people', roles: ['admin'], section: 'admin' },
-    { id: 'system', label: 'System Settings', icon: 'bi-gear', roles: ['admin'], section: 'admin' },
-    { id: 'security', label: 'Security Audit', icon: 'bi-shield-lock', roles: ['admin'], section: 'admin' },
-    { id: 'backup', label: 'Backup & Recovery', icon: 'bi-hdd', roles: ['admin'], section: 'admin' },
+    // { id: 'system', label: 'System Settings', icon: 'bi-gear', roles: ['admin'], section: 'admin' },
+    // { id: 'security', label: 'Security Audit', icon: 'bi-shield-lock', roles: ['admin'], section: 'admin' },
+    // { id: 'backup', label: 'Backup & Recovery', icon: 'bi-hdd', roles: ['admin'], section: 'admin' },
     
     // Manager & Admin
     { id: 'inventory', label: 'Inventory Management', icon: 'bi-boxes', roles: ['admin', 'manager'], section: 'management' },
     { id: 'categories', label: 'Product Categories', icon: 'bi-tags', roles: ['admin', 'manager'], section: 'management' },
     { id: 'reports', label: 'Reports & Analytics', icon: 'bi-graph-up', roles: ['admin', 'manager'], section: 'management' },
-    { id: 'suppliers', label: 'Suppliers', icon: 'bi-truck', roles: ['admin', 'manager'], section: 'management' },
+    // { id: 'suppliers', label: 'Suppliers', icon: 'bi-truck', roles: ['admin', 'manager'], section: 'management' },
     
     // Cashier, Manager & Admin
     // { id: 'pos', label: 'Point of Sale', icon: 'bi-cart3', roles: ['admin', 'manager', 'cashier'], section: 'operations' },

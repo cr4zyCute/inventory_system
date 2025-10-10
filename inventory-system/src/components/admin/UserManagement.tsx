@@ -10,6 +10,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  username: string;
   role: string;
   isActive: boolean;
   createdAt: string;

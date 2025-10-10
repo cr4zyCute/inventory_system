@@ -818,44 +818,7 @@ export const OverviewDashboard: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
           
-          {/* Top Products Performance */}
-          <div className="report-section">
-            <h4>Top Products Performance</h4>
-            <div className="product-performance">
-              {(() => {
-                // Calculate top products from real transaction data
-                const productMap = new Map<string, { sales: number; units: number }>();
-                
-                transactions.forEach(transaction => {
-                  transaction.items?.forEach((item: any) => {
-                    const productName = item.product?.name || 'Unknown Product';
-                    const existing = productMap.get(productName) || { sales: 0, units: 0 };
-                    productMap.set(productName, {
-                      sales: existing.sales + (item.unitPrice * item.quantity),
-                      units: existing.units + item.quantity
-                    });
-                  });
-                });
-                
-                const topProducts = Array.from(productMap.entries())
-                  .map(([name, data]) => ({ name, ...data }))
-                  .sort((a, b) => b.sales - a.sales)
-                  .slice(0, 5);
-
-                return topProducts.length > 0 ? topProducts.map(product => (
-                  <div key={product.name} className="product-item">
-                    <div>
-                      <h5>{product.name}</h5>
-                      <span>{product.units} units sold</span>
-                    </div>
-                    <strong>{formatCurrency(product.sales)}</strong>
-                  </div>
-                )) : (
-                  <p>No product sales data available</p>
-                );
-              })()}
-            </div>
-          </div>
+       
 
           {/* Business Insights */}
         

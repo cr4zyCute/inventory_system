@@ -4,6 +4,7 @@ import UserManagement from './UserManagement';
 import ProductManagement from './ProductManagement';
 import Reports from '../shared/report';
 import CategoryManager from '../category/CategoryManager';
+import TransactionHistory from '../cashier/TransactionRecord';
 import './css/AdminDashboard.css';
 
 export function AdminDashboard() {
@@ -150,15 +151,7 @@ export function AdminDashboard() {
           </section>
         );
       case 'transactions':
-        return (
-          <section className="content-section">
-            <h2><i className="bi-receipt"></i> Transaction History</h2>
-            <p>View and manage transaction records.</p>
-            <div className="placeholder-content">
-              <p>Transaction history interface will be implemented here.</p>
-            </div>
-          </section>
-        );
+        return <TransactionHistory />;
       default:
         return (
           <section className="content-section">
