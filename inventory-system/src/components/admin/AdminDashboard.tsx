@@ -7,6 +7,7 @@ import CategoryManager from '../category/CategoryManager';
 import TransactionHistory from '../cashier/TransactionRecord';
 import DashboardAnalytics from './DashboardAnalytics';
 import ProfilePage from './ProfilePage';
+import Settings from '../settings/Settings';
 import './css/AdminDashboard.css';
 
 export function AdminDashboard() {
@@ -76,6 +77,8 @@ export function AdminDashboard() {
         return <DashboardAnalytics />;
       case 'profile':
         return <ProfilePage />;
+      case 'settings':
+        return <Settings />;
       default:
         return (
           <section className="content-section">

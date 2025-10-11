@@ -35,11 +35,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     { id: 'inventory', label: 'Inventory Management', icon: 'bi-boxes', roles: ['admin', 'manager'], section: 'management' },
     { id: 'categories', label: 'Product Categories', icon: 'bi-tags', roles: ['admin', 'manager'], section: 'management' },
     // { id: 'analytics', label: 'Dashboard Analytics', icon: 'bi-bar-chart', roles: ['admin'], section: 'management' },
-    { id: 'reports', label: 'Reports & Analytics', icon: 'bi-graph-up', roles: ['admin', 'manager'], section: 'management' },
+    { id: 'reports', label: 'Reports & Analytics', icon: 'bi-graph-up', roles: ['admin', 'manager', 'cashier'], section: 'management' },
     // { id: 'suppliers', label: 'Suppliers', icon: 'bi-truck', roles: ['admin', 'manager'], section: 'management' },
     
     // Cashier, Manager & Admin
-    // { id: 'pos', label: 'Point of Sale', icon: 'bi-cart3', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
+    { id: 'pos', label: 'Point of Sale', icon: 'bi-cart3', roles: ['cashier'], section: 'operations' },
     { id: 'transactions', label: 'Transaction History', icon: 'bi-receipt', roles: ['admin', 'manager', 'cashier'], section: 'operations' },
     
     // Cashier Only
@@ -47,6 +47,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
     { id: 'phone-scanner', label: 'Scanner', icon: 'bi-phone', roles: ['cashier'], section: 'operations' },
     { id: 'transaction-display', label: 'Transaction Display', icon: 'bi-display', roles: ['cashier'], section: 'operations' },
     // { id: 'quick-sale', label: 'Quick Sale', icon: 'bi-lightning', roles: ['cashier'], section: 'operations' },
+    
+    // Settings - All Users
+    { id: 'settings', label: 'Settings', icon: 'bi-gear', roles: ['admin', 'manager', 'cashier'], section: 'settings' },
   ];
 
   // Filter menu items based on user role
@@ -85,6 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeItem, onItemClick }) => {
       case 'admin': return 'Administration';
       case 'management': return 'Management';
       case 'operations': return 'Operations';
+      case 'settings': return 'Settings';
       default: return section;
     }
   };

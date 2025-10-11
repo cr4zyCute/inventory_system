@@ -6,6 +6,7 @@ import TransactionHistory from '../cashier/TransactionRecord';
 import ProductManagement from '../admin/ProductManagement';
 import Reports from '../shared/report';
 import ProfilePage from '../admin/ProfilePage';
+import Settings from '../settings/Settings';
 import './ManagerDashboard.css';
 
 export function ManagerDashboard() {
@@ -188,6 +189,8 @@ export function ManagerDashboard() {
         return <TransactionHistory />;
       case 'profile':
         return <ProfilePage />;
+      case 'settings':
+        return <Settings />;
       default:
         return (
           <section className="content-section">

@@ -313,7 +313,7 @@
 
 .user-name {
   font-weight: 500;
-  color: #000000;
+  color: #000000 !important;
 }
 
 /* Role Badge */

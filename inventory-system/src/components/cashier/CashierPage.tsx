@@ -9,6 +9,8 @@ import TransactionDisplay from './transaction.jsx';
 import TransactionHistory from './TransactionRecord';
 import Reports from '../shared/report';
 import ProfilePage from '../admin/ProfilePage';
+import Settings from '../settings/Settings';
+import CashierDashboardAnalytics from './CashierDashboardAnalytics';
 import './BarcodeScanner.css';
 import './CashierPage.css';
 
@@ -35,7 +37,7 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
   const { user } = useAuth();
   
   // Note: onBackToHome and user are available for future use
-  const [activeSection, setActiveSection] = useState('pos');
+  const [activeSection, setActiveSection] = useState('dashboard');
   const [isScannerActive, setIsScannerActive] = useState(false);
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const [lastScannedCode, setLastScannedCode] = useState<string>('');
@@ -274,7 +276,6 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
   const renderContent = () => {
     switch (activeSection) {
       case 'pos':
-      case 'dashboard':
         return (
           <div className="cashier-content">
             <div className="scanner-section">
@@ -443,6 +444,8 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
             </div>
           </section>
         );
+      case 'dashboard':
+        return <CashierDashboardAnalytics />;
       case 'transactions':
         return <TransactionHistory />;
       case 'phone-scanner':
@@ -453,6 +456,8 @@ const CashierPage: React.FC<CashierPageProps> = ({ onBackToHome }) => {
         return <Reports />;
       case 'profile':
         return <ProfilePage />;
+      case 'settings':
+        return <Settings />;
       default:
         return (
           <section className="content-section">

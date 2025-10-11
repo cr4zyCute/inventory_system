@@ -146,6 +146,38 @@ export class UserController {
     }
   }
 
+  @Put(':id/change-password')
+  async changePassword(
+    @Param('id') id: string,
+    @Body() passwordDto: { currentPassword: string; newPassword: string },
+  ) {
+    try {
+      const result = await this.userService.changePassword(
+        id,
+        passwordDto.currentPassword,
+        passwordDto.newPassword,
+      );
+      return {
+        success: true,
+        message: 'Password updated successfully',
+      };
+    } catch (error) {
+      if (error.message === 'Invalid current password') {
+        throw new HttpException(
+          'Current password is incorrect',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (error.code === 'P2025') {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException(
+        'Failed to update password',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
