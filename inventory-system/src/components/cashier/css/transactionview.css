@@ -18,7 +18,7 @@
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .transaction-header h1 {
@@ -65,8 +65,8 @@
   border-radius: 12px;
   margin-bottom: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e9ecef;
-  border: 1px solid #000000 !important;
+  border: 2px solid #e9ecef;
+  border: 2px solid #000000 !important;
 }
 
 .manual-barcode-section h3 {
@@ -87,7 +87,7 @@
 .manual-barcode-section input {
   flex: 1;
   padding: 12px 16px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   font-size: 16px;
   font-family: 'Courier New', monospace;
@@ -105,7 +105,7 @@
   padding: 12px 24px;
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
@@ -151,7 +151,7 @@
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .scan-feed h3 {
@@ -185,7 +185,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
   border-radius: 8px;
   margin-bottom: 8px;
   background: #f8f9fa;
@@ -215,7 +215,7 @@
   background: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 /* Shopping Cart */
@@ -223,9 +223,9 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
   overflow: hidden;
-  border: 1px solid #000000 !important;
+  border: 2px solid #000000 !important;
 }
 
 .cart-header {
@@ -234,8 +234,8 @@
   align-items: center;
   padding: 24px;
   background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-  border: 1px solid #000000 !important;
+  border-bottom: 2px solid #e9ecef;
+  border: 2px solid #000000 !important;
 }
 
 .cart-header h3 {
@@ -250,7 +250,7 @@
 .clear-cart-btn {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -266,7 +266,7 @@
 .cart-items {
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #000000 !important;
+  border: 2px solid #000000 !important;
 }
 
 .empty-cart {
@@ -282,7 +282,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 16px 24px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 2px solid #e9ecef;
   transition: all 0.2s;
 }
 
@@ -340,14 +340,14 @@
   background: #f8f9fa;
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .quantity-btn {
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   background: #ffffff;
   color: #000000;
   cursor: pointer;
@@ -399,7 +399,7 @@
   background: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .item-total {
@@ -413,7 +413,7 @@
 .remove-btn {
   background: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -430,7 +430,7 @@
 .cart-summary {
   padding: 24px;
   background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  border-left: 2px solid #e9ecef;
 }
 
 .total-section {
@@ -455,7 +455,7 @@
   padding: 16px;
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
@@ -475,7 +475,7 @@
   border-radius: 12px;
   margin-bottom: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .instructions h3 {
@@ -506,7 +506,7 @@
   border-radius: 8px;
   margin-top: 24px;
   font-size: 0.9rem;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef;
 }
 
 .debug-section h4 {
@@ -524,7 +524,7 @@
   padding: 8px 16px;
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
@@ -546,7 +546,7 @@
   border-radius: 8px;
   font-size: 12px;
   color: #000000;
-  border: 1px solid #dee2e6;
+  border: 2px solid #dee2e6;
 }
 
 /* Phone Sync Status */
@@ -556,7 +556,7 @@
   border-radius: 8px;
   margin-top: 16px;
   font-size: 12px;
-  border: 1px solid #ffeaa7;
+  border: 2px solid #ffeaa7;
 }
 
 .phone-sync-status strong {
@@ -572,7 +572,7 @@
   padding: 6px 12px;
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 6px;
   cursor: pointer;
   font-size: 11px;

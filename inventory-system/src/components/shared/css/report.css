@@ -276,7 +276,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
   flex-wrap: wrap;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .control-group {
@@ -295,7 +295,7 @@
 .report-select,
 .date-input {
   padding: 12px 16px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
@@ -314,7 +314,7 @@
   padding: 12px 24px;
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -352,7 +352,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   min-height: 500px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 /* Loading State */
@@ -415,7 +415,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000 !important;
   background: #ffffff;
 }
 
@@ -434,7 +434,7 @@
 .action-button {
   padding: 8px 16px;
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 6px;
   color: #000000;
   font-weight: 500;
@@ -502,7 +502,7 @@
   color: #000000;
   font-size: 1.5rem;
   flex-shrink: 0;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .metric-card.warning .metric-icon {
@@ -548,7 +548,7 @@
   color: #000000;
   margin: 0 0 16px 0;
   padding-bottom: 8px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000 !important;
 }
 
 /* Product List */
@@ -565,7 +565,7 @@
   padding: 16px;
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   align-items: center;
 }
 
@@ -600,7 +600,7 @@
   padding: 16px;
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-left: 4px solid #000000;
   align-items: center;
 }
@@ -631,7 +631,7 @@
   padding: 12px 16px;
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   align-items: center;
 }
 
@@ -817,7 +817,7 @@
 .metric-trend.positive {
   color: #000000;
   background-color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .metric-trend.negative {
@@ -835,7 +835,7 @@
 
 .chart-container {
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 12px;
   padding: 24px;
 }
@@ -934,7 +934,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .donut-value {
@@ -966,13 +966,13 @@
   width: 12px;
   height: 12px;
   border-radius: 2px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 /* Dashboard Activity */
 .dashboard-activity {
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 12px;
   padding: 24px;
 }
@@ -983,7 +983,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000 !important;
 }
 
 .activity-header h4 {
@@ -1009,7 +1009,7 @@
   align-items: center;
   gap: 16px;
   padding: 12px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   background: #ffffff;
 }
@@ -1054,7 +1054,7 @@
 
 .preview-card {
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 12px;
   padding: 32px;
   text-align: center;
@@ -1094,7 +1094,7 @@
   flex-direction: column;
   gap: 8px;
   padding-top: 16px;
-  border-top: 1px solid #000000;
+  border-top: 2px solid #000000 !important;
 }
 
 .preview-details span {
@@ -1164,7 +1164,7 @@
   background: #ffffff;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
 }
 
 .login-entry {
@@ -1172,7 +1172,7 @@
   grid-template-columns: 2fr 1fr 1fr;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f3f4;
+  border-bottom: 2px solid #f1f3f4 !important;
   transition: background-color 0.2s ease;
   gap: 16px;
 }
@@ -1411,7 +1411,7 @@
   border-radius: 12px;
   padding: 18px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
+  border: 2px solid #e5e7eb !important;
   transition: all 0.3s ease;
   position: relative;
   overflow: visible;
@@ -1448,7 +1448,7 @@
   gap: 12px;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 2px solid #f3f4f6 !important;
 }
 
 .rank-badge {
@@ -1458,7 +1458,7 @@
   padding: 6px 10px;
   border-radius: 8px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0 !important;
 }
 
 .rank-number {
@@ -1515,7 +1515,7 @@
   padding: 8px;
   background: #f8fafc;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0 !important;
   min-height: 50px;
   width: 100%;
   box-sizing: border-box;
@@ -1656,7 +1656,7 @@
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
 }
 
 .header-info {
@@ -1762,7 +1762,7 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -1817,7 +1817,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
 }
 
 .metric-content {
@@ -1867,7 +1867,7 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
 }
 
 .report-section h4 {
@@ -1893,7 +1893,7 @@
   padding: 16px;
   background: #f8f9fa;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
   align-items: center;
   transition: all 0.2s ease;
 }
@@ -1949,7 +1949,7 @@
   background: #f8f9fa;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #e9ecef;
+  border: 2px solid #e9ecef !important;
 }
 
 .payment-info {

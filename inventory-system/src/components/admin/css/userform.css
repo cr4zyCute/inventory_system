@@ -5,7 +5,7 @@
   max-height: 90vh;
   overflow-y: auto;
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .modal-header {
@@ -80,7 +80,7 @@
 .form-input,
 .form-select {
   padding: 0.75rem;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   transition: all 0.2s;
@@ -173,7 +173,7 @@
 .modal-button.cancel {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .modal-button.cancel:hover:not(:disabled) {
@@ -189,7 +189,7 @@
 .modal-button.primary:hover:not(:disabled) {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .loading-spinner {

@@ -20,7 +20,7 @@
 /* Header */
 .sidebar-header {
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,7 +60,7 @@
 /* User Section */
 .sidebar-user {
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -165,7 +165,7 @@
 .nav-link.active {
   background: linear-gradient(90deg, #ffffff, #cccccc);
   color: #000000;
-  border-right: 3px solid #000000;
+  border-left: 2px solid #000000;
 }
 
 .nav-link.active::before {
@@ -194,13 +194,13 @@
 /* Footer */
 .sidebar-footer {
   padding: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .logout-button {
   width: 100%;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
   padding: 12px 20px;
   border-radius: 8px;
@@ -342,7 +342,7 @@
   white-space: nowrap;
   z-index: 1001;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar.collapsed .logout-button:hover::after {
@@ -359,5 +359,5 @@
   white-space: nowrap;
   z-index: 1001;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }

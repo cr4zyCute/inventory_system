@@ -36,7 +36,7 @@
   top: 10px;
   right: 10px;
   background: #f3f4f6;
-  border: 1px solid #d1d5db;
+  border: 2px solid #d1d5db;
   color: #6b7280;
   font-size: 14px;
   cursor: pointer;
@@ -63,7 +63,7 @@
   background: white;
   padding: 20px;
   font-family: 'Courier New', monospace;
-  border: 1px solid #e5e7eb;
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
 }
 
@@ -146,7 +146,7 @@
 .total-row.final {
   font-weight: bold;
   font-size: 14px;
-  border-top: 1px solid #000;
+  border-left: 2px solid #000;
   padding-top: 5px;
   margin-top: 5px;
 }
@@ -212,7 +212,7 @@
   border-radius: 8px;
   color: #000000;
   min-width: 120px;
-  border: 1px solid #000000 !important;
+  border: 2px solid #000000 !important;
 }
 
 .stat-number {
@@ -240,7 +240,7 @@
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   gap: 16px;
-  border: 1px solid #000000 !important;
+  border: 2px solid #000000 !important;
 }
 
 .search-container {
@@ -263,7 +263,7 @@
 .search-input {
   width: 100%;
   padding: 12px 16px 12px 40px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
@@ -312,7 +312,7 @@
 
 .filter-select {
   padding: 12px 16px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   background: #ffffff;
   color: #000000;
@@ -339,7 +339,7 @@
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
-  border: 1px solid #e5e7eb;
+  border: 2px solid #e5e7eb;
 }
 
 .transactions-table {
@@ -350,7 +350,7 @@
 
 .table-header {
   background: #000000;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
 }
 
 .table-header-cell {
@@ -364,7 +364,7 @@
 }
 
 .table-row {
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000;
   background-color: #ffffff;
   transition: all 0.2s ease;
 }
@@ -388,7 +388,7 @@
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .transaction-datetime {
@@ -418,7 +418,7 @@
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .transaction-total {
@@ -435,7 +435,7 @@
   text-transform: uppercase;
   background: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .payment-cash {
@@ -461,19 +461,19 @@
 .status-completed {
   background: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .status-refunded {
   background: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .status-pending {
   background: #666666;
   color: #ffffff;
-  border: 1px solid #666666;
+  border: 2px solid #666666;
 }
 
 /* Action Dropdown */
@@ -485,7 +485,7 @@
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -503,7 +503,7 @@
 
 .dropdown-menu {
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   min-width: 160px;
@@ -564,7 +564,7 @@
   padding: 16px 20px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  border: 2px solid #e5e7eb;
 }
 
 .results-info {
@@ -580,7 +580,7 @@
 
 .pagination-btn {
   padding: 8px 16px;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   background: #ffffff;
   border-radius: 6px;
   cursor: pointer;
@@ -715,7 +715,7 @@
   padding: 6px 12px;
   background: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
@@ -734,7 +734,7 @@
   padding: 10px 16px;
   background: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -872,7 +872,7 @@
 .stat-card.cashier-performance {
   background: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
 }
 
 .stat-card.cashier-performance .stat-number {

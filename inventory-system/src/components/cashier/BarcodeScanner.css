@@ -32,7 +32,7 @@
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 15px;
-  border: 1px solid #f5c6cb;
+  border-top: 2px solid #f5c6cb;
   width: 100%;
   max-width: 400px;
 }
@@ -63,7 +63,7 @@
   background: #e3f2fd;
   padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #2196f3;
+  border-left: 2px solid #2196f3;
   max-width: 400px;
   width: 100%;
 }
@@ -176,13 +176,13 @@
 .scan-message.success {
   background: #d4edda;
   color: #155724;
-  border: 1px solid #c3e6cb;
+  border-top: 2px solid #c3e6cb;
 }
 
 .scan-message.error {
   background: #f8d7da;
   color: #721c24;
-  border: 1px solid #f5c6cb;
+  border-top: 2px solid #f5c6cb;
 }
 
 .last-scan {
@@ -223,7 +223,7 @@
 
 .phone-instructions li {
   padding: 8px 0;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 2px solid #e9ecef;
   color: #495057;
 }
 
@@ -234,7 +234,7 @@
   border-radius: 8px;
   text-align: center;
   margin-top: 20px;
-  border: 1px solid #bee5eb;
+  border-top: 2px solid #bee5eb;
 }
 
 /* Transaction Display Styles */
@@ -323,7 +323,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  border: 1px solid #e9ecef;
+  border-top: 2px solid #e9ecef;
   border-radius: 8px;
   margin-bottom: 10px;
   background: #f8f9fa;
@@ -387,7 +387,7 @@
 
 .back-button {
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -409,7 +409,7 @@
 
 .torch-button {
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -621,7 +621,7 @@
 .scanner-toggle-mobile {
   background: rgba(0, 0, 0, 0.8);
   color: white;
-  border: 2px solid #ffffff;
+  border-top: 2px solid #ffffff;
   border-radius: 25px;
   padding: 12px 24px;
   font-size: 16px;
@@ -694,7 +694,7 @@
   max-width: 320px;
   text-align: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -718,7 +718,7 @@
   padding: 8px 16px;
   border-radius: 20px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;

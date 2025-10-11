@@ -37,7 +37,7 @@
 .add-user-button {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #ffffff;
+  border-top: 2px solid #ffffff;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -79,7 +79,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .error-close-button {
@@ -103,7 +103,7 @@
   border-radius: 8px;
   justify-content: flex-start;
   border-color: #000000;
-  border: 1px solid #000000 !important;
+  border-top: 2px solid #000000 !important;
 }
 
 .search-container {
@@ -126,7 +126,7 @@
 .search-input {
   width: 100%;
   padding: 10px 12px 10px 40px;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
   border-radius: 8px;
   font-size: 14px;
   background-color: #ffffff;
@@ -173,14 +173,14 @@
   background-color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
   font-weight: 500;
   pointer-events: none;
 }
 
 .filter-select {
   padding: 10px 12px;
-  border: 1px solid #000000 !important;
+  border-top: 2px solid #000000 !important;
   border-radius: 8px;
   background-color: #ffffff;
   color: #000000;
@@ -203,7 +203,7 @@
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
   overflow: hidden;
   margin-bottom: 24px;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .users-table {
@@ -220,11 +220,11 @@
   text-align: left;
   font-weight: 600;
   color: #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
 }
 
 .table-row {
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000;
   background-color: #ffffff;
 }
 
@@ -253,7 +253,7 @@
 .retry-button {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -289,26 +289,23 @@
   justify-content: center;
   font-weight: 600;
   font-size: 0.875rem;
-  border: 2px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 /* Alternative avatar styles for variety while maintaining black/white theme */
 .user-avatar.admin {
   background-color: #000000 !important;
-  
-  border: 2px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .user-avatar.manager {
   background-color: #ffffff !important;
- 
-  border: 2px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .user-avatar.cashier {
   background-color: #000000 !important;
-  
-
+  border-top: 2px solid #000000;
 }
 
 .user-name {
@@ -340,7 +337,7 @@
 .role-badge.cashier {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 /* Status Toggle */
@@ -365,7 +362,7 @@
 .status-toggle.inactive {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 /* Action Buttons */
@@ -399,13 +396,13 @@
   padding: 20px 24px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .pagination-button {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -453,7 +450,7 @@
   padding: 24px;
   width: 400px;
   max-width: 90vw;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .modal-title {
@@ -492,7 +489,7 @@
 .modal-button.cancel {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .modal-button.cancel:hover {
@@ -503,7 +500,7 @@
 .modal-button.primary {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .modal-button.primary:hover {
@@ -514,7 +511,7 @@
 .modal-button.danger {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 .modal-button.danger:hover {
@@ -551,7 +548,7 @@
 .dropdown-menu {
   position: fixed;
   background: #ffffff;
-  border: 1px solid #000000;
+  border-top: 2px solid #000000;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 1000;
@@ -647,7 +644,7 @@
 /* Search Input Enhancement */
 .search-input {
   padding-right: 40px; /* Make room for clear button */
-  border: 1px solid #000000 !important;
+  border-top: 2px solid #000000 !important;
 }
 
 /* Improved table cell spacing for dates */

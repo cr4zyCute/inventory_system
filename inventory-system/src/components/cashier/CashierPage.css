@@ -297,7 +297,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
   margin-bottom: 10px;
   transition: all 0.3s ease;
@@ -383,7 +383,7 @@
   background: #f8f9fa;
   padding: 4px;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
+  border: 2px solid #dee2e6;
 }
 
 .qty-btn {

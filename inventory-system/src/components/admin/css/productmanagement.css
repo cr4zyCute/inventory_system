@@ -32,7 +32,7 @@
   gap: 6px;
   padding: 8px 12px;
   background-color: #f0f8ff;
-  border: 1px solid #007bff;
+  border: 2px solid #007bff !important;
   border-radius: 6px;
   font-size: 0.8rem;
   color: #007bff;
@@ -68,7 +68,7 @@
     0 15px 40px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   animation: phoneSuccessSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
   position: relative;
   overflow: hidden;
 }
@@ -106,7 +106,7 @@
 
 .phone-success-header {
   padding: 35px 25px 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
   background: rgba(255, 255, 255, 0.05);
   position: relative;
 }
@@ -152,7 +152,7 @@
 
 .scanned-barcode-display {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 25px;
@@ -292,7 +292,7 @@
 .phone-success-button {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
   color: #000000;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
   border-radius: 16px;
   padding: 18px 35px;
   font-size: 1.2rem;
@@ -456,7 +456,7 @@
 .scan-product-button {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #ffffff;
+  border: 2px solid #ffffff !important;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
@@ -510,7 +510,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .error-close-button {
@@ -549,7 +549,7 @@
   padding: 10px 16px;
   background: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -599,7 +599,7 @@
 .search-input {
   width: 100%;
   padding: 10px 12px 10px 40px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   font-size: 14px;
   background-color: #ffffff;
@@ -647,14 +647,14 @@
   background-color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   font-weight: 500;
   pointer-events: none;
 }
 
 .filter-select {
   padding: 10px 12px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   background-color: #ffffff;
   color: #000000;
@@ -677,7 +677,7 @@
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
   overflow: hidden;
   margin-bottom: 24px;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .products-table {
@@ -694,11 +694,11 @@
   text-align: left;
   font-weight: 600;
   color: #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 2px solid #ffffff !important;
 }
 
 .table-row {
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #000000 !important;
   background-color: #ffffff;
  
 }
@@ -728,7 +728,7 @@
 .retry-button {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -778,7 +778,7 @@
   font-family: 'Courier New', monospace;
   font-size: 0.8rem;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 /* Price Info */
@@ -829,7 +829,7 @@
 .stock-status.low-stock {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .stock-status.out-of-stock {
@@ -859,7 +859,7 @@
 .status-toggle.inactive {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 /* Pagination */
@@ -871,13 +871,13 @@
   padding: 20px 24px;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .pagination-button {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -921,7 +921,7 @@
   padding: 24px;
   width: 400px;
   max-width: 90vw;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .modal-title {
@@ -965,7 +965,7 @@
 .modal-button.cancel {
   background-color: #ffffff;
   color: #000000;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .modal-button.cancel:hover {
@@ -976,7 +976,7 @@
 .modal-button.danger {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .modal-button.danger:hover {
@@ -987,7 +987,7 @@
 .modal-button.primary {
   background-color: #000000;
   color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .modal-button.primary:disabled,
@@ -1079,7 +1079,7 @@
 
 .product-details-card {
   background-color: #f8f9fa;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
@@ -1090,7 +1090,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 2px solid #e0e0e0 !important;
 }
 
 .product-detail-row:last-child {
@@ -1111,7 +1111,7 @@
 
 .warning-box {
   background-color: #ffffff;
-  border: 2px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -1146,7 +1146,7 @@
 
 .delete-modal-actions {
   padding: 20px 24px 24px 24px;
-  border-top: 1px solid #000000;
+  border-top: 2px solid #000000 !important;
   margin-top: 0;
   justify-content: space-between;
 }
@@ -1199,7 +1199,7 @@
 .dropdown-menu {
   position: fixed;
   background: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 1000;
@@ -1287,7 +1287,7 @@
 .form-input,
 .form-textarea {
   padding: 0.75rem;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   transition: all 0.2s;
@@ -1413,7 +1413,7 @@
 .scan-modal-content {
   max-width: 720px;
   width: 95%;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 .scan-modal-body {
@@ -1429,7 +1429,7 @@
 
 .scan-instructions {
   background-color: #f8f9fa;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   padding: 1rem;
   color: #000000;
@@ -1446,7 +1446,7 @@
   gap: 8px;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border: 1px solid #ff6b6b;
+  border: 2px solid #ff6b6b !important;
   background-color: #ffecec;
   color: #000000;
   font-size: 0.85rem;
@@ -1457,7 +1457,7 @@
   align-items: center;
   gap: 12px;
   padding: 1rem;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   background-color: #f0f8ff;
 }
@@ -1477,7 +1477,7 @@
 .preview-value {
   display: inline-block;
   background-color: #ffffff;
-  border: 1px solid #000000;
+  border: 2px solid #000000 !important;
   padding: 4px 8px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
@@ -1604,7 +1604,7 @@
 .category-input-field {
   width: 100%;
   padding: 12px 40px 12px 16px;
-  border: 2px solid #000000;
+  border: 2px solid #000000 !important;
   border-radius: 8px;
   font-size: 1rem;
   background-color: #ffffff;
@@ -1657,7 +1657,7 @@
 .category-clear-btn {
   background-color: #ffffff;
   color: #000000;
-  border: 2px solid #000000;
+  border: 2px solid #000000 !important;
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
@@ -1715,7 +1715,7 @@
   max-height: 85vh;
   overflow: hidden;
   animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 2px solid #000000;
+  border: 2px solid #000000 !important;
 }
 
 @keyframes modalSlideIn {
@@ -1795,7 +1795,7 @@
 .category-modal-done-btn {
   background: #000000;
   color: #ffffff;
-  border: 2px solid #000000;
+  border: 2px solid #000000 !important;
   padding: 12px 24px;
   border-radius: 12px;
   cursor: pointer;
