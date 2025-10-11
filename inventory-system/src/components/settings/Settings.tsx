@@ -8,31 +8,54 @@ import './css/Settings.css';
 
 const Settings: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('account');
+  
+  // Set default tab based on user role (first tab in the list)
+  const getDefaultTab = () => {
+    switch (user?.role?.toLowerCase()) {
+      case 'admin':
+        return 'system';
+      case 'manager':
+        return 'management';
+      case 'cashier':
+        return 'cashier';
+      default:
+        return 'account';
+    }
+  };
+  
+  const [activeTab, setActiveTab] = useState(() => {
+    // Initialize with account as fallback, will be updated when user loads
+    return user ? getDefaultTab() : 'account';
+  });
+
+  // Update active tab when user data becomes available
+  React.useEffect(() => {
+    if (user && activeTab === 'account' && user.role) {
+      setActiveTab(getDefaultTab());
+    }
+  }, [user]);
 
   const getTabsForRole = () => {
-    const baseTabs = [
-      { id: 'account', label: 'Account Settings', icon: 'bi-person-gear' }
-    ];
-
+    const accountTab = { id: 'account', label: 'Account Settings', icon: 'bi-person-gear' };
+    
     switch (user?.role?.toLowerCase()) {
       case 'admin':
         return [
-          ...baseTabs,
-          { id: 'system', label: 'System Settings', icon: 'bi-gear' }
+          { id: 'system', label: 'System Settings', icon: 'bi-gear' },
+          accountTab
         ];
       case 'manager':
         return [
-          ...baseTabs,
-          { id: 'management', label: 'Management Settings', icon: 'bi-clipboard-data' }
+          { id: 'management', label: 'Management Settings', icon: 'bi-clipboard-data' },
+          accountTab
         ];
       case 'cashier':
         return [
-          ...baseTabs,
-          { id: 'cashier', label: 'Cashier Settings', icon: 'bi-display' }
+          { id: 'cashier', label: 'Cashier Settings', icon: 'bi-display' },
+          accountTab
         ];
       default:
-        return baseTabs;
+        return [accountTab];
     }
   };
 

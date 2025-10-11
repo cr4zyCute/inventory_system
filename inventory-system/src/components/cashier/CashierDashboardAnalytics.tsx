@@ -115,7 +115,7 @@ const fetchCashierTransactions = async (cashierId: string): Promise<Transaction[
     }));
 
     // Filter transactions for current cashier only
-    return allTransactions.filter(t => 
+    return allTransactions.filter((t: Transaction) => 
       t.cashierId === cashierId || 
       t.cashier.toLowerCase().includes(cashierId.toLowerCase()) ||
       t.status === 'Completed' // Include completed transactions if cashier matching is unclear

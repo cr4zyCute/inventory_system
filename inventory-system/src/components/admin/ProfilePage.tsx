@@ -250,7 +250,7 @@ interface UserActivityData {
 }
 
 const ProfilePage: React.FC = () => {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, updateUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [activityData, setActivityData] = useState<UserActivityData | null>(null);
@@ -398,13 +398,14 @@ const ProfilePage: React.FC = () => {
       const result = await response.json();
       
       if (result.success) {
+        // Update the user data in AuthContext immediately
+        updateUser(formData);
+        
         setShowEditModal(false);
         setToast({
           message: 'Profile updated successfully!',
           type: 'success'
         });
-        // Note: The auth context would need to be updated here in a real implementation
-        // For now, the changes will be visible on next login
       } else {
         throw new Error(result.message || 'Failed to update profile');
       }

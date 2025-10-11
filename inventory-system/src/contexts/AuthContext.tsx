@@ -5,6 +5,7 @@ import type { AuthState, LoginCredentials } from '../types/auth';
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => void;
+  updateUser: (updatedUser: any) => void;
   isLoading: boolean;
 }
 
@@ -134,11 +135,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setAuthState(newAuthState);
   };
 
+  const updateUser = (updatedUser: any) => {
+    if (authState.user) {
+      const newAuthState = {
+        ...authState,
+        user: {
+          ...authState.user,
+          ...updatedUser,
+          name: `${updatedUser.firstName || authState.user.firstName} ${updatedUser.lastName || authState.user.lastName}`
+        }
+      };
+      setAuthState(newAuthState);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       ...authState,
       login,
       logout,
+      updateUser,
       isLoading
     }}>
       {children}
