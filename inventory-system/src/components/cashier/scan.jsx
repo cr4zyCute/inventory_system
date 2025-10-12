@@ -12,7 +12,12 @@ const PhoneScanner = () => {
   const [torchEnabled, setTorchEnabled] = useState(false);
   const mountedRef = useRef(true);
   const scannerRef = useRef(null);
+  const lastScanTimeRef = useRef(0);
+  const lastScannedCodeRef = useRef('');
   const scannerId = 'phone-scanner-container';
+  
+  // Debounce settings
+  const SCAN_DEBOUNCE_TIME = 3000; // 3 seconds between scans
 
   useEffect(() => {
     mountedRef.current = true;
@@ -93,6 +98,20 @@ const PhoneScanner = () => {
 
     const onScanSuccess = async (decodedText) => {
       if (!mountedRef.current) return;
+
+      // Debounce mechanism - prevent rapid consecutive scans
+      const currentTime = Date.now();
+      const timeSinceLastScan = currentTime - lastScanTimeRef.current;
+      
+      // Prevent duplicate scans of the same code within debounce time
+      if (lastScannedCodeRef.current === decodedText && timeSinceLastScan < SCAN_DEBOUNCE_TIME) {
+        console.log('📱 Duplicate scan ignored (debounce):', decodedText);
+        return;
+      }
+      
+      // Update last scan tracking
+      lastScanTimeRef.current = currentTime;
+      lastScannedCodeRef.current = decodedText;
 
       console.log('📱 Successful scan detected, stopping scanner:', decodedText);
       await stopScanner();
@@ -269,7 +288,6 @@ const PhoneScanner = () => {
     setTimeout(() => {
       if (mountedRef.current) {
         startScanner();
-       
       }
     }, 300); // Small delay for smooth UX
   };

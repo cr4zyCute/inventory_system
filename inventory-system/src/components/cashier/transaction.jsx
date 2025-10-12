@@ -12,6 +12,11 @@ const TransactionDisplay = () => {
   const [lastScanTime, setLastScanTime] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('waiting');
   const [manualBarcode, setManualBarcode] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchDebounceTimer, setSearchDebounceTimer] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [lastProcessedScanId, setLastProcessedScanId] = useState(null);
   const [processedLocalScans, setProcessedLocalScans] = useState(new Set());
   const [isInitialized, setIsInitialized] = useState(false);
@@ -21,6 +26,102 @@ const TransactionDisplay = () => {
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptItems, setReceiptItems] = useState([]);
   const [receiptTotal, setReceiptTotal] = useState(0);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [changeAmount, setChangeAmount] = useState(0);
+
+  // Calculate total and reset payment fields when cart changes
+  useEffect(() => {
+    const newTotal = scannedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    setTotal(newTotal);
+    
+    // Reset payment fields when cart is empty
+    if (scannedItems.length === 0) {
+      setPaymentAmount('');
+      setChangeAmount(0);
+    }
+  }, [scannedItems]);
+
+  // Real-time debounced search function
+  const performSearch = async (searchTerm) => {
+    console.log('🔍 performSearch called with:', searchTerm);
+    
+    if (!searchTerm || searchTerm.length < 1) {
+      console.log('❌ Search term too short or empty');
+      setSearchResults([]);
+      setShowDropdown(false);
+      setIsSearching(false);
+      return;
+    }
+
+    // Show immediate feedback for single character
+    if (searchTerm.length === 1) {
+      console.log('⏳ Single character, showing loading state');
+      setIsSearching(true);
+      setShowDropdown(true);
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    console.log('🔍 Real-time searching for:', searchTerm);
+    console.log('📡 Making API call to:', `/api/products/search?q=${encodeURIComponent(searchTerm)}`);
+    
+    try {
+      const response = await fetch(`/api/products/search?q=${encodeURIComponent(searchTerm)}`);
+      console.log('📡 API Response status:', response.status);
+      console.log('📡 API Response ok:', response.ok);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('📦 API Response data:', result);
+        
+        if (result.success && result.data) {
+          const products = result.data.slice(0, 8); // Limit to 8 results for better UX
+          console.log('✅ Found products:', products.length, products);
+          setSearchResults(products);
+          setShowDropdown(true);
+          setSelectedIndex(-1); // Reset selection
+        } else {
+          console.log('❌ API returned no data or unsuccessful');
+          setSearchResults([]);
+          setShowDropdown(searchTerm.length >= 2); // Show "no results" for 2+ chars
+        }
+      } else {
+        console.warn('❌ Search API error status:', response.status);
+        const errorText = await response.text();
+        console.warn('❌ Error details:', errorText);
+        setSearchResults([]);
+        setShowDropdown(false);
+      }
+    } catch (error) {
+      console.error('🚫 Search API network error:', error);
+      setSearchResults([]);
+      setShowDropdown(false);
+    }
+
+    setIsSearching(false);
+    console.log('✅ Search completed');
+  };
+
+  // Debounced search to avoid too many API calls
+  const searchProducts = (searchTerm) => {
+    console.log('🕐 searchProducts called with:', searchTerm);
+    
+    // Clear previous timer
+    if (searchDebounceTimer) {
+      console.log('⏰ Clearing previous timer');
+      clearTimeout(searchDebounceTimer);
+    }
+
+    // Set new timer for debounced search
+    console.log('⏰ Setting new timer for 200ms debounce');
+    const timer = setTimeout(() => {
+      console.log('⏰ Timer fired, calling performSearch');
+      performSearch(searchTerm);
+    }, 200); // 200ms debounce for real-time feel
+
+    setSearchDebounceTimer(timer);
+  };
 
   // Product database - this should connect to your actual API
   const findProductByBarcode = async (barcode) => {
@@ -49,15 +150,7 @@ const TransactionDisplay = () => {
       console.warn('🚫 API not available, using mock data:', error);
     }
 
-    // Fallback to mock data (same as your current system)
-    const mockProducts = [
-      { barcode: '1234567890123', name: 'Premium Coffee Beans', price: 15.99, stock: 50 },
-      { barcode: '9876543210987', name: 'Organic Milk', price: 4.99, stock: 30 },
-      { barcode: '5555555555555', name: 'Fresh Bread', price: 3.49, stock: 25 },
-      { barcode: '1111111111111', name: 'Energy Drink', price: 2.99, stock: 100 },
-      { barcode: '049000132601', name: 'Scanned Product', price: 5.99, stock: 20 },
-    ];
-    
+   
     return mockProducts.find(product => product.barcode === barcode) || null;
   };
 
@@ -316,6 +409,30 @@ const TransactionDisplay = () => {
     }
   };
 
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.search-container')) {
+        setShowDropdown(false);
+        setSelectedIndex(-1);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showDropdown]);
+
+  // Cleanup search timer on unmount
+  useEffect(() => {
+    return () => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+    };
+  }, [searchDebounceTimer]);
+
   // Listen for barcode scan events (only after initialization)
   useEffect(() => {
     if (!isInitialized) {
@@ -392,16 +509,9 @@ const TransactionDisplay = () => {
       clearInterval(localStorageInterval);
       clearInterval(crossDeviceInterval);
     };
-  }, [handleNewScan, lastProcessedScanId, processedLocalScans, isInitialized]);
+  }, [isInitialized]);
 
-  // Calculate total whenever items change (price * quantity)
-  useEffect(() => {
-    const newTotal = scannedItems.reduce((sum, item) => 
-      sum + (item.price * item.quantity), 0 // Price multiplied by quantity
-    );
-    setTotal(newTotal);
-  }, [scannedItems]);
-
+  // Remove item function
   const removeItem = (id) => {
     setScannedItems(prev => prev.filter(item => item.id !== id));
   };
@@ -432,6 +542,64 @@ const TransactionDisplay = () => {
     setRealtimeScans([]);
   };
 
+  const handleManualBarcodeChange = (e) => {
+    const value = e.target.value;
+    console.log('⌨️ Input changed to:', value);
+    setManualBarcode(value);
+    
+    // Trigger real-time search immediately
+    console.log('🚀 Triggering search for:', value);
+    searchProducts(value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (!showDropdown || searchResults.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex(prev => 
+          prev < searchResults.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex(prev => 
+          prev > 0 ? prev - 1 : searchResults.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
+          handleProductSelect(searchResults[selectedIndex]);
+        } else if (manualBarcode.trim()) {
+          handleManualBarcodeSubmit(e);
+        }
+        break;
+      case 'Escape':
+        setShowDropdown(false);
+        setSelectedIndex(-1);
+        break;
+    }
+  };
+
+  const handleProductSelect = async (product) => {
+    // Create scan data using the selected product's barcode
+    const scanData = {
+      barcode: product.barcode,
+      timestamp: new Date().toISOString(),
+      deviceType: 'manual'
+    };
+
+    // Process the selected product (includes buzz sound)
+    await handleNewScan(scanData);
+    
+    // Clear the input and hide dropdown
+    setManualBarcode('');
+    setSearchResults([]);
+    setShowDropdown(false);
+  };
+
   const handleManualBarcodeSubmit = async (e) => {
     e.preventDefault();
     if (!manualBarcode.trim()) return;
@@ -448,8 +616,10 @@ const TransactionDisplay = () => {
     // Process the manual barcode entry (includes buzz sound)
     await handleNewScan(scanData);
     
-    // Clear the input
+    // Clear the input and hide dropdown
     setManualBarcode('');
+    setSearchResults([]);
+    setShowDropdown(false);
   };
 
   const processCheckout = async () => {
@@ -556,124 +726,220 @@ const TransactionDisplay = () => {
 
   return (
     <div className="transaction-display">
-
-      {/* Manual Barcode Input Section */}
-      <div className="manual-barcode-section">
-        <h3><i className="bi-keyboard"></i> Manual Barcode Entry</h3>
-        <form onSubmit={handleManualBarcodeSubmit}>
-          <input
-            type="text"
-            value={manualBarcode}
-            onChange={(e) => setManualBarcode(e.target.value)}
-            placeholder="Enter barcode manually (e.g., 48000014700028)"
-            pattern="[0-9]*"
-            title="Please enter numbers only"
-          />
-          <button 
-            type="submit" 
-            disabled={!manualBarcode.trim()}
-          >
-            <i className="bi-plus-circle"></i> Add Item
-          </button>
-        </form>
-        <p><i className="bi-lightbulb"></i> Tip: You can type or paste barcodes here for testing or when the scanner isn't working</p>
-      </div>
-
-      <div className="display-grid">
-        {/* Real-time Scan Feed */}
-        <div className="scan-feed">
-          <h3><i className="bi-phone"></i> Live Scan Feed</h3>
-          {realtimeScans.length === 0 ? (
-            <p className="no-scans">No scans yet. Start scanning with your phone!</p>
-          ) : (
-            <div className="scan-list">
-              {realtimeScans.map(scan => (
-                <div key={scan.id} className="scan-item">
-                  <div className="scan-barcode">{scan.barcode}</div>
-                  <div className="scan-time">
-                    {new Date(scan.timestamp).toLocaleTimeString()}
-                  </div>
-                  <div className="scan-device">
-                    {scan.deviceType === 'manual' ? '  Manual' : '📱 Phone'}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="transaction-layout">
+        {/* Left Side - Cart Table */}
+        <div className="cart-table-section">
+          <table className="cart-table">
+            <thead>
+              <tr>
+                <th>Barcode</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {scannedItems.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="empty-cart-row">
+                    Cart is empty. Scan or search for products to add them.
+                  </td>
+                </tr>
+              ) : (
+                scannedItems.map((item) => (
+                  <tr key={item.id} className="cart-row">
+                    <td className="barcode-cell">{item.barcode}</td>
+                    <td className="product-cell">{item.name}</td>
+                    <td className="price-cell">₱{item.price.toFixed(2)}</td>
+                    <td className="quantity-cell">
+                      <div className="quantity-controls">
+                        <button 
+                          onClick={() => decreaseQuantity(item.id)}
+                          className="qty-btn"
+                          disabled={item.quantity <= 1}
+                        >
+                          <i className="bi-dash"></i>
+                        </button>
+                        <span className="qty-display">{item.quantity}</span>
+                        <button 
+                          onClick={() => increaseQuantity(item.id)}
+                          className="qty-btn"
+                        >
+                          <i className="bi-plus"></i>
+                        </button>
+                      </div>
+                    </td>
+                    <td className="actions-cell">
+                      <button 
+                        onClick={() => removeItem(item.id)}
+                        className="remove-btn"
+                        title="Remove item"
+                      >
+                        <i className="bi-x-circle"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Shopping Cart */}
-        <div className="cart-section">
-          <div className="cart-header">
-            <h3><i className="bi-cart"></i> Shopping Cart ({scannedItems.length} items)</h3>
-            <button onClick={clearCart} className="clear-cart-btn">
-              <i className="bi-trash"></i> Clear Cart
-            </button>
-          </div>
+        {/* Right Side - Search and Payment */}
+        <div className="right-side-container">
+          {/* Manual Barcode Entry Section */}
+          <div className="manual-barcode-section">
+            <h3><i className="bi-upc-scan"></i> Manual Barcode Entry</h3>
+            <div className="search-container">
+              <i className="bi-search search-icon"></i>
+              <input
+                type="text"
+                value={manualBarcode}
+                onChange={handleManualBarcodeChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Search by name, barcode, or description..."
+                title="Search by barcode or product name - Use arrow keys to navigate"
+                autoComplete="off"
+                spellCheck="false"
+                className="search-input"
+              />
+              {searchResults.length > 0 && (
+                <div className="search-results-count">
+                  {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                </div>
+              )}
+              {manualBarcode && (
+                <button
+                  onClick={() => {
+                    setManualBarcode('');
+                    setSearchResults([]);
+                    setShowDropdown(false);
+                  }}
+                  className="search-clear-button"
+                  title="Clear search"
+                >
+                  <i className="bi-x"></i>
+                </button>
+              )}
+              <form onSubmit={handleManualBarcodeSubmit} style={{ display: 'none' }}>
+                <button type="submit" disabled={!manualBarcode.trim()}>Add</button>
+              </form>
 
-          <div className="cart-items">
-            {scannedItems.length === 0 ? (
-              <div className="empty-cart">
-                <p>Cart is empty. Scan items with your phone to add them here.</p>
-              </div>
-            ) : (
-              scannedItems.map(item => (
-                <div key={item.id} className="cart-item">
-                  <div className="item-info">
-                    <h4>{item.name}</h4>
-                    <p className="barcode">{item.barcode}</p>
-                    <p className="price">₱{item.price.toFixed(2)} each</p>
-                    <p className="scanned-by">
-                      {item.scannedBy === 'manual' ? '  Added manually' : '📱 Scanned by phone'} 
-                      {item.lastScanned && ` (last: ${item.lastScanned.toLocaleTimeString()})`}
-                    </p>
+              {/* Search Results Dropdown */}
+              {showDropdown && searchResults.length > 0 && (
+                <div className="search-dropdown">
+                  <div className="dropdown-header">
+                    <i className="bi-search"></i>
+                    <span>Found {searchResults.length} product{searchResults.length !== 1 ? 's' : ''}</span>
                   </div>
-                  <div className="item-controls">
-                    <div className="quantity-controls">
-                      <button 
-                        onClick={() => decreaseQuantity(item.id)}
-                        className="quantity-btn decrease"
-                        disabled={item.quantity <= 1}
+                  <div className="dropdown-results">
+                    {searchResults.map((product, index) => (
+                      <div
+                        key={product.id}
+                        className={`dropdown-item ${index === selectedIndex ? 'selected' : ''}`}
+                        onClick={() => handleProductSelect(product)}
                       >
-                        <i className="bi-dash"></i>
-                      </button>
-                      <span className="quantity-display">
-                        <strong>{item.quantity}</strong> pcs
-                      </span>
-                      <button 
-                        onClick={() => increaseQuantity(item.id)}
-                        className="quantity-btn increase"
-                      >
-                        <i className="bi-plus"></i>
-                      </button>
-                    </div>
-                    <div className="item-total">
-                      <strong>₱{(item.price * item.quantity).toFixed(2)}</strong>
-                    </div>
-                    <button 
-                      onClick={() => removeItem(item.id)}
-                      className="remove-btn"
-                      title="Remove item"
-                    >
-                      <i className="bi-x-circle"></i>
-                    </button>
+                        <div className="product-info">
+                          <div className="product-name">
+                            <i className="bi-box"></i>
+                            <span>{product.name}</span>
+                          </div>
+                          <div className="product-details">
+                            <span className="product-barcode">
+                              <i className="bi-upc"></i> {product.barcode}
+                            </span>
+                            <span className="product-price">
+                              <i className="bi-currency-dollar"></i> ₱{product.price?.toFixed(2) || '0.00'}
+                            </span>
+                        
+                          </div>
+                        </div>
+                     
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))
-            )}
+              )}
+
+              {/* No results message */}
+              {showDropdown && searchResults.length === 0 && manualBarcode.length >= 2 && !isSearching && (
+                <div className="search-dropdown">
+                  <div className="dropdown-item no-results">
+                    <i className="bi-exclamation-circle"></i>
+                    <span>No products found for "{manualBarcode}"</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Loading state */}
+              {isSearching && showDropdown && (
+                <div className="search-dropdown">
+                  <div className="dropdown-item loading">
+                    <i className="bi-arrow-clockwise spinning"></i>
+                    <span>Searching products...</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Type to search hint */}
+              {showDropdown && manualBarcode.length === 1 && (
+                <div className="search-dropdown">
+                  <div className="dropdown-item no-results">
+                    <i className="bi-keyboard"></i>
+                    <span>Keep typing to search products...</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="cart-footer">
-            <div className="total-section">
-              <h3><i className="bi-currency-dollar"></i> Total: ₱{total.toFixed(2)}</h3>
+          {/* Payment Section */}
+          <div className="payment-section-right">
+            <div className="total-display">
+              <h2>Total: <span className="total-amount">₱{total.toFixed(2)}</span></h2>
             </div>
-            <button 
-              onClick={processCheckout}
-              className="checkout-btn"
-              disabled={scannedItems.length === 0}
-            >
-              <i className="bi-credit-card"></i> Process Payment
-            </button>
+            
+            <div className="payment-input-section">
+              <div className="amount-received-group">
+                <label htmlFor="amountReceived">
+                  <i className="bi-cash"></i> Amount Received
+                </label>
+                <input
+                  id="amountReceived"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={paymentAmount}
+                  onChange={(e) => {
+                    setPaymentAmount(e.target.value);
+                    const payment = parseFloat(e.target.value) || 0;
+                    const change = payment - total;
+                    setChangeAmount(change > 0 ? change : 0);
+                  }}
+                  placeholder="0"
+                  className="amount-input"
+                />
+              </div>
+              
+              <div className="change-display-section">
+                <div className="change-info">
+                  <i className="bi-arrow-return-left"></i>
+                  <span>Change: </span>
+                  <span className={`change-value ${changeAmount >= 0 ? 'positive' : 'negative'}`}>
+                    ₱{changeAmount.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={processCheckout}
+                className="process-payment-btn"
+                disabled={scannedItems.length === 0 || !paymentAmount || parseFloat(paymentAmount) < total}
+              >
+                <i className="bi-credit-card"></i> Process Payment
+              </button>
+            </div>
           </div>
         </div>
       </div>

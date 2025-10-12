@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -16,6 +17,38 @@ import { Prisma } from '@prisma/client';
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Get('search')
+  async search(@Query('q') query: string) {
+    try {
+      console.log('🔍 Search endpoint called with query:', query);
+      
+      if (!query || query.trim().length < 2) {
+        console.log('❌ Query too short:', query);
+        return {
+          success: true,
+          data: [],
+          message: 'Query too short, minimum 2 characters required',
+        };
+      }
+
+      console.log('🔍 Calling productService.search with:', query.trim());
+      const products = await this.productService.search(query.trim());
+      console.log('✅ Search results:', products.length, 'products found');
+      
+      return {
+        success: true,
+        data: products,
+        message: `Found ${products.length} products matching "${query}"`,
+      };
+    } catch (error) {
+      console.error('❌ Search error:', error);
+      throw new HttpException(
+        'Failed to search products',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @Get()
   async findAll() {

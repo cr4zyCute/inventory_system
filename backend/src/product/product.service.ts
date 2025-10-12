@@ -69,4 +69,46 @@ export class ProductService {
       },
     });
   }
+
+  async search(query: string): Promise<Product[]> {
+    console.log('🔍 ProductService.search called with:', query);
+    
+    const result = await this.prisma.product.findMany({
+      where: {
+        AND: [
+          { isActive: true },
+          {
+            OR: [
+              {
+                name: {
+                  contains: query,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                barcode: {
+                  contains: query,
+                },
+              },
+              {
+                description: {
+                  contains: query,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+        ],
+      },
+      orderBy: [
+        {
+          name: 'asc',
+        },
+      ],
+      take: 20, // Limit to 20 results
+    });
+    
+    console.log('✅ ProductService.search found:', result.length, 'products');
+    return result;
+  }
 }
