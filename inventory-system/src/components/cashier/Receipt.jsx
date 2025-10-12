@@ -2,18 +2,18 @@ import React, { useState, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './css/receipt.css';
 
-const Receipt = ({ items, total, onClose, onPrint }) => {
+const Receipt = ({ items, total, paymentAmount, changeAmount, onClose, onPrint }) => {
   const { user } = useAuth();
   const receiptRef = useRef();
   const [paymentMethod, setPaymentMethod] = useState('cash');
-  const [cashReceived, setCashReceived] = useState(total);
+  const [cashReceived, setCashReceived] = useState(paymentAmount || total);
   const [isProcessing, setIsProcessing] = useState(false);
   const [printSuccess, setPrintSuccess] = useState(false);
   const [processingStep, setProcessingStep] = useState('');
 
   const receiptNumber = `RCP-${Date.now().toString().slice(-8)}`;
   const currentDate = new Date();
-  const change = paymentMethod === 'cash' ? Math.max(0, cashReceived - total) : 0;
+  const change = changeAmount || Math.max(0, cashReceived - total);
 
   // Update product inventory by deducting sold quantities
   const updateProductInventory = async () => {
@@ -425,11 +425,11 @@ const Receipt = ({ items, total, onClose, onPrint }) => {
               </div>
               <div className="total-row">
                 <span>Cash</span>
-                <span>₱{cashReceived.toFixed(2)}</span>
+                <span>₱{(paymentAmount || cashReceived).toFixed(2)}</span>
               </div>
               <div className="total-row">
                 <span>Change</span>
-                <span>₱{change.toFixed(2)}</span>
+                <span>₱{(changeAmount || change).toFixed(2)}</span>
               </div>
             </div>
 

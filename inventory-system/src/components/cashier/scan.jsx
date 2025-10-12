@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import './BarcodeScanner.css';
 
 const PhoneScanner = () => {
   const [isScanning, setIsScanning] = useState(false);
-  const [lastScanned, setLastScanned] = useState('');
-  const [scanMessage, setScanMessage] = useState('');
   const [error, setError] = useState('');
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [scanMessage, setScanMessage] = useState('Tap to start scanning');
+  const [lastScanned, setLastScanned] = useState('');
   const [scannedProduct, setScannedProduct] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [torchEnabled, setTorchEnabled] = useState(false);
+  const [scannerStopped, setScannerStopped] = useState(false); // Prevent auto-restart
+  
   const mountedRef = useRef(true);
   const scannerRef = useRef(null);
   const lastScanTimeRef = useRef(0);
@@ -21,6 +23,17 @@ const PhoneScanner = () => {
 
   useEffect(() => {
     mountedRef.current = true;
+    
+    // Global scan detection - catch any scans happening outside our callback
+    console.log('📱 Setting up global scan detection...');
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      if (args[0] && args[0].includes('/api/products/scan-realtime')) {
+        console.log('🚨 GLOBAL: Detected scan-realtime API call!', args);
+        console.log('🚨 Call stack:', new Error().stack);
+      }
+      return originalFetch.apply(this, args);
+    };
     
     // Auto-start scanner when component mounts
     setTimeout(() => {
@@ -37,30 +50,47 @@ const PhoneScanner = () => {
   }, []);
 
   const stopScanner = async () => {
+    console.log('📱 ===== FORCE STOPPING SCANNER =====');
+    
     if (scannerRef.current) {
       try {
+        console.log('📱 Calling scanner.stop()...');
         await scannerRef.current.stop();
+        console.log('📱 Scanner stopped');
       } catch (error) {
         console.warn('📱 stopScanner stop failed:', error);
       }
 
       try {
+        console.log('📱 Calling scanner.clear()...');
         await scannerRef.current.clear();
+        console.log('📱 Scanner cleared');
       } catch (error) {
         console.warn('📱 stopScanner clear failed:', error);
       }
 
       scannerRef.current = null;
+      console.log('📱 Scanner ref set to null');
     }
 
     if (mountedRef.current) {
       setIsScanning(false);
       setTorchEnabled(false);
+      setScannerStopped(true); // CRITICAL: Prevent auto-restart
+      console.log('📱 Scanner state set to stopped');
     }
+    
+    console.log('📱 ===== SCANNER COMPLETELY STOPPED =====');
   };
 
-  const startScanner = async () => {
+  const startScanner = async (forceRestart = false) => {
     if (!mountedRef.current) return;
+    
+    // CRITICAL: Don't restart if scanner was manually stopped
+    if (scannerStopped && !forceRestart) {
+      console.log('📱 Scanner was stopped, not restarting automatically');
+      return;
+    }
 
     if (scannerRef.current) {
       await stopScanner();
@@ -97,7 +127,13 @@ const PhoneScanner = () => {
     scannerRef.current = html5QrCode;
 
     const onScanSuccess = async (decodedText) => {
-      if (!mountedRef.current) return;
+      console.log('📱 ===== ON SCAN SUCCESS CALLED =====');
+      console.log('📱 Barcode detected:', decodedText);
+      
+      if (!mountedRef.current) {
+        console.log('📱 Component not mounted, returning');
+        return;
+      }
 
       // Debounce mechanism - prevent rapid consecutive scans
       const currentTime = Date.now();
@@ -113,23 +149,40 @@ const PhoneScanner = () => {
       lastScanTimeRef.current = currentTime;
       lastScannedCodeRef.current = decodedText;
 
-      console.log('📱 Successful scan detected, stopping scanner:', decodedText);
+      console.log('📱 Successful scan detected, processing:', decodedText);
+      
+      // IMMEDIATELY stop scanner to prevent continuous scanning
+      console.log('📱 Stopping scanner immediately...');
       await stopScanner();
+      
       setScanMessage('📱 Scan captured - Processing item...');
-
       setLastScanned(decodedText);
       setError('');
 
       try {
+        console.log('📱 Fetching product details...');
         const productDetails = await fetchProductDetails(decodedText);
+
+        if (!productDetails) {
+          console.warn('📱 Unknown product scanned, skipping display');
+          setScanMessage('⚠️ Unknown product – not added');
+          setError('');
+          setScannedProduct(null);
+          setScannerStopped(false);
+          await startScanner(true);
+          return;
+        }
+
         setScannedProduct(productDetails);
 
+        console.log('📱 Sending scan data to transaction...');
         await sendScanData(decodedText);
+        console.log('📱 Scan data sent successfully');
 
         setShowSuccessModal(true);
       } catch (err) {
+        console.error('📱 Error in scan processing:', err);
         setError('Failed to send scan data');
-        console.error('Scan error:', err);
       }
     };
 
@@ -145,13 +198,18 @@ const PhoneScanner = () => {
     };
 
     try {
-      console.log('📱 Starting Html5Qrcode...');
+      console.log('📱 Starting Html5Qrcode with callbacks...');
+      console.log('📱 onScanSuccess function:', typeof onScanSuccess);
+      console.log('📱 onScanError function:', typeof onScanError);
+      
       await html5QrCode.start(
         { facingMode: 'environment' },
         config,
         onScanSuccess,
         onScanError
       );
+      
+      console.log('📱 Html5Qrcode started successfully');
 
       if (!mountedRef.current) {
         await stopScanner();
@@ -159,14 +217,13 @@ const PhoneScanner = () => {
       }
 
       setIsScanning(true);
-    
-      
+      setScanMessage('📱 Scanner ready - aim at next barcode');
+      setScannerStopped(false);
+
     } catch (error) {
-      
-      await stopScanner();
       if (mountedRef.current) {
         setError(`Failed to start scanner: ${error.message}`);
-        setScanMessage('');
+        setScanMessage('📱 Tap to start scanning');
       }
     }
   };
@@ -212,20 +269,11 @@ const PhoneScanner = () => {
       console.warn('Could not fetch product details:', error);
     }
     
-    // Fallback to mock data
-    const mockProducts = [
-      { barcode: '1234567890123', name: 'Premium Coffee Beans', price: 15.99 },
-      { barcode: '9876543210987', name: 'Organic Milk', price: 4.99 },
-      { barcode: '5555555555555', name: 'Fresh Bread', price: 3.49 },
-      { barcode: '1111111111111', name: 'Energy Drink', price: 2.99 },
-      { barcode: '049000132601', name: 'Scanned Product', price: 5.99 },
-    ];
-    
-    return mockProducts.find(product => product.barcode === barcode) || 
-           { barcode, name: 'Unknown Product', price: 0.00 };
+    return null;
   };
 
   const sendScanData = async (barcode) => {
+    console.log('📱 ===== SEND SCAN DATA CALLED =====');
     console.log('📱 Phone Scanner: Sending scan data for barcode:', barcode);
     
     try {
@@ -277,19 +325,26 @@ const PhoneScanner = () => {
         setScanMessage('📱 Scanner stopped - Tap to start again');
       }
     } else {
-      await startScanner();
+      // Reset the stopped flag when manually starting
+      setScannerStopped(false);
+      await startScanner(true);
     }
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = async () => {
     setShowSuccessModal(false);
     setScannedProduct(null);
-    // Automatically start scanner for next item
-    setTimeout(() => {
+
+    // Restart scanner immediately for next item
+    setScannerStopped(false);
+    try {
+      await startScanner(true);
+    } catch (error) {
+      console.error('📱 Failed to restart scanner from modal:', error);
       if (mountedRef.current) {
-        startScanner();
+        setError('Failed to restart scanner');
       }
-    }, 300); // Small delay for smooth UX
+    }
   };
 
   return (

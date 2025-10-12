@@ -775,11 +775,11 @@ const ProductManagement: React.FC = () => {
               currentProducts.map((product: Product) => (
                 <tr key={product.id} className={`table-row ${!product.isActive ? 'inactive' : ''}`}>
                   <td className="table-cell">
-                    <div className="product-info">
-                      <div className="product-details">
-                        <span className="product-name">{product.name}</span>
+                    <div className="pm-product-info">
+                      <div className="pm-product-details">
+                        <span className="pm-product-name">{product.name}</span>
                         {product.description && (
-                          <span className="product-description">{product.description}</span>
+                          <span className="pm-product-description">{product.description}</span>
                         )}
                       </div>
                     </div>

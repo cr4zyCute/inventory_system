@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Receipt from './Receipt';
 import './CashierPage.css';
 import './css/transactionview.css';
+import scanBeepSound from './Barcode scanner beep sound (sound effect).mp3';
 
 const TransactionDisplay = () => {
   const { user } = useAuth();
@@ -23,11 +24,17 @@ const TransactionDisplay = () => {
   const [lastScannedBarcode, setLastScannedBarcode] = useState(null);
   const [lastScanTimestamp, setLastScanTimestamp] = useState(null);
   const [componentInitTime, setComponentInitTime] = useState(null);
+  
+  // UNIFIED SCAN DEDUPLICATION SYSTEM
+  const [globalProcessedScans, setGlobalProcessedScans] = useState(new Map());
+  const SCAN_COOLDOWN_MS = 3000; // 3 seconds cooldown for same barcode
+  const ENABLE_CROSS_DEVICE_POLLING = false; // Disable cross-device polling to prevent auto-scans
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptItems, setReceiptItems] = useState([]);
   const [receiptTotal, setReceiptTotal] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [changeAmount, setChangeAmount] = useState(0);
+  const scanSoundRef = useRef(null);
 
   // Calculate total and reset payment fields when cart changes
   useEffect(() => {
@@ -147,82 +154,91 @@ const TransactionDisplay = () => {
         console.warn('Error details:', errorText);
       }
     } catch (error) {
-      console.warn('🚫 API not available, using mock data:', error);
+      console.warn('🚫 API not available:', error);
     }
 
-   
-    return mockProducts.find(product => product.barcode === barcode) || null;
+    // If API fails or product not found, return null so item is skipped
+    console.log('❌ Product not found for barcode:', barcode);
+    return null;
   };
 
   // Play buzz sound when scanning
   const playBuzzSound = () => {
     try {
-      // Create a short buzz sound using Web Audio API
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz buzz
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-      
-      console.log('🔊 Played scan buzz sound');
+      if (!scanSoundRef.current) {
+        scanSoundRef.current = new Audio(scanBeepSound);
+        scanSoundRef.current.preload = 'auto';
+        scanSoundRef.current.volume = 0.8;
+      }
+
+      const sound = scanSoundRef.current.cloneNode(true);
+      sound.volume = 0.8;
+      sound.play().catch(error => {
+        console.warn('🔇 Could not play scan sound:', error);
+      });
+
+      console.log('🔊 Played custom scan sound');
     } catch (error) {
-      console.warn('🔇 Could not play buzz sound:', error);
+      console.warn('🔇 Could not initialize scan sound:', error);
     }
   };
 
-  // Handle new barcode scans from phone with cooldown
-  const handleNewScan = useCallback(async (scanData) => {
-    console.log('📱 Received scan data:', scanData);
-    const { barcode, timestamp, deviceType } = scanData;
-    
+  // UNIFIED SCAN DEDUPLICATION - Prevents all duplicate scans
+  const isValidNewScan = useCallback((barcode, timestamp) => {
     const currentTime = Date.now();
     const scanTime = new Date(timestamp).getTime();
     
     // Create unique scan identifier
     const scanId = `${barcode}-${timestamp}`;
     
-    // CRITICAL: Only process scans that are newer than component initialization
+    // Check if we've already processed this exact scan
+    if (globalProcessedScans.has(scanId)) {
+      console.log('🚫 DUPLICATE BLOCKED: Exact scan already processed:', scanId);
+      return false;
+    }
+    
+    // Check cooldown for same barcode (prevent rapid scans of same item)
+    const lastScanTime = globalProcessedScans.get(barcode);
+    if (lastScanTime && (currentTime - lastScanTime) < SCAN_COOLDOWN_MS) {
+      console.log('🚫 COOLDOWN BLOCKED: Same barcode scanned too recently:', barcode);
+      return false;
+    }
+    
+    // Check if scan is too old (ignore old scans from previous sessions)
     if (componentInitTime && scanTime < componentInitTime) {
-      console.log('🚫 Ignoring old scan from before component initialization:', {
-        scanTime: new Date(scanTime).toISOString(),
-        initTime: new Date(componentInitTime).toISOString(),
-        barcode
-      });
-      return;
+      console.log('🚫 OLD SCAN BLOCKED: Scan predates component initialization:', scanId);
+      return false;
     }
     
-    // Check if we've already processed this exact scan (by timestamp + barcode)
-    if (processedLocalScans.has(scanId)) {
-      console.log('🚫 Already processed this exact scan:', scanId);
-      return;
+    // Mark scan as processed
+    setGlobalProcessedScans(prev => {
+      const newMap = new Map(prev);
+      newMap.set(scanId, currentTime); // Track exact scan
+      newMap.set(barcode, currentTime); // Track barcode for cooldown
+      return newMap;
+    });
+    
+    console.log('✅ SCAN VALIDATED: Processing new scan:', scanId);
+    return true;
+  }, [globalProcessedScans, componentInitTime, SCAN_COOLDOWN_MS]);
+
+  // Handle new barcode scans from phone with unified deduplication
+  const handleNewScan = useCallback(async (scanData) => {
+    console.log('📱 ===== HANDLE NEW SCAN CALLED =====');
+    console.log('📱 Received scan data:', scanData);
+    const { barcode, timestamp, deviceType } = scanData;
+    
+    console.log('🔍 About to validate scan...');
+    // UNIFIED VALIDATION - Single point of truth for all scan sources
+    if (!isValidNewScan(barcode, timestamp)) {
+      console.log('❌ Scan validation FAILED - scan blocked');
+      return; // Scan blocked by deduplication system
     }
     
-    // Enhanced cooldown logic: prevent same barcode within 3 seconds
-    if (lastScannedBarcode === barcode && lastScanTimestamp) {
-      const timeSinceLastScan = currentTime - lastScanTimestamp;
-      if (timeSinceLastScan < 3000) { // 3 second cooldown
-        console.log('⏸️ Scan cooldown active, ignoring rapid scan:', { 
-          barcode, 
-          timeSinceLastScan: `${timeSinceLastScan}ms` 
-        });
-        return;
-      }
-    }
-    
-    // Mark this scan as processed immediately
-    setProcessedLocalScans(prev => new Set([...prev, scanId]));
-    
-    // Update cooldown tracking
+    console.log('✅ Scan validation PASSED - continuing...');
+    // Update tracking (old logic kept for compatibility)
     setLastScannedBarcode(barcode);
-    setLastScanTimestamp(currentTime);
+    setLastScanTimestamp(Date.now());
     setLastScanTime(new Date(timestamp));
     setConnectionStatus('connected');
     
@@ -239,39 +255,42 @@ const TransactionDisplay = () => {
     console.log('🔍 Looking up product for scanned barcode:', barcode);
     const product = await findProductByBarcode(barcode);
     
-    if (product) {
-      // Check if product already exists in cart
-      setScannedItems(prev => {
-        const existingItemIndex = prev.findIndex(item => item.barcode === barcode);
-        
-        if (existingItemIndex >= 0) {
-          // Product exists, increase quantity
-          const updatedItems = [...prev];
-          updatedItems[existingItemIndex] = {
-            ...updatedItems[existingItemIndex],
-            quantity: updatedItems[existingItemIndex].quantity + 1,
-            lastScanned: new Date(timestamp) // Track when last scanned
-          };
-          console.log(`➕ Increased quantity for ${product.name}: ${updatedItems[existingItemIndex].quantity}`);
-          return updatedItems;
-        } else {
-          // New product, add to cart
-          const newItem = {
-            id: `${barcode}-${Date.now()}`, // Use barcode-based ID for consistency
-            barcode,
-            name: product.name,
-            price: product.price,
-            quantity: 1,
-            timestamp: new Date(timestamp),
-            lastScanned: new Date(timestamp),
-            scannedBy: deviceType
-          };
-          console.log('➕ Adding new product to cart:', newItem);
-          return [...prev, newItem];
-        }
-      });
+    if (!product) {
+      console.warn('🚫 Skipping unknown product, nothing added to cart for barcode:', barcode);
+      return;
     }
-  }, [lastScannedBarcode, lastScanTimestamp, componentInitTime, processedLocalScans]);
+
+    // Check if product already exists in cart
+    setScannedItems(prev => {
+      const existingItemIndex = prev.findIndex(item => item.barcode === barcode);
+      
+      if (existingItemIndex >= 0) {
+        // Product exists, increase quantity
+        const updatedItems = [...prev];
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1,
+          lastScanned: new Date(timestamp) // Track when last scanned
+        };
+        console.log(`➕ Increased quantity for ${product.name}: ${updatedItems[existingItemIndex].quantity}`);
+        return updatedItems;
+      } else {
+        // New product, add to cart
+        const newItem = {
+          id: `${barcode}-${Date.now()}`, // Use barcode-based ID for consistency
+          barcode,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          timestamp: new Date(timestamp),
+          lastScanned: new Date(timestamp),
+          scannedBy: deviceType
+        };
+        console.log('➕ Adding new product to cart:', newItem);
+        return [...prev, newItem];
+      }
+    });
+  }, [isValidNewScan]);
 
   // Comprehensive API testing function
   const runDiagnostics = async () => {
@@ -323,12 +342,15 @@ const TransactionDisplay = () => {
     const initializeComponent = async () => {
       console.log('🚀 Initializing Transaction Display - FORCING CLEAN STATE');
       
-      // AGGRESSIVELY CLEAR ALL DATA
-      localStorage.clear(); // Clear ALL localStorage, not just 'latestScan'
-      sessionStorage.clear(); // Clear session storage too
+      // CLEAR ONLY SCAN-RELATED DATA (preserve authentication)
+      localStorage.removeItem('latestScan'); // Only clear scan data
+      localStorage.removeItem('scanHistory'); // Clear any scan history
+      localStorage.removeItem('lastProcessedScan'); // Clear processed scan tracking
+      // DO NOT clear authentication data (inventory_auth_state, inventory_auth_expiry)
       
       // Reset ALL component state
       setProcessedLocalScans(new Set());
+      setGlobalProcessedScans(new Map()); // Clear unified deduplication system
       setScannedItems([]);
       setRealtimeScans([]);
       setTotal(0);
@@ -338,7 +360,7 @@ const TransactionDisplay = () => {
       setLastScanTime(null);
       setConnectionStatus('waiting');
       
-      console.log('🧹 AGGRESSIVELY cleared ALL storage and state');
+      console.log('🧹 Cleared scan-related storage and state (preserved authentication)');
 
       // Test API connection
       try {
@@ -368,7 +390,7 @@ const TransactionDisplay = () => {
     initializeComponent();
   }, []);
 
-  // Poll backend for cross-device scans (only logs when there's new data)
+  // Poll backend for cross-device scans (with strict filtering)
   const pollCrossDeviceScans = async () => {
     try {
       const response = await fetch('/api/products/scans-realtime/cashier-session');
@@ -376,30 +398,38 @@ const TransactionDisplay = () => {
         const result = await response.json();
         const scans = result.data || [];
         
-        // Process new scans that we haven't seen before
-        const newScans = scans.filter(scan => 
-          !lastProcessedScanId || scan.id > lastProcessedScanId
-        );
-        
-        if (newScans.length > 0) {
-          console.log('📡 Computer: Received new cross-device scans:', newScans);
+        // STRICT FILTERING: Only process scans that are very recent and haven't been processed
+        const currentTime = Date.now();
+        const recentScans = scans.filter(scan => {
+          const scanTime = new Date(scan.timestamp).getTime();
+          const timeDiff = currentTime - scanTime;
           
-          // Process each new scan
-          for (const scan of newScans) {
+          // Only consider scans from the last 10 seconds AND newer than component init
+          const isRecent = timeDiff < 10000; // 10 seconds
+          const isNewerThanInit = !componentInitTime || scanTime > componentInitTime;
+          const isNewerThanLastProcessed = !lastProcessedScanId || scan.id > lastProcessedScanId;
+          
+          return isRecent && isNewerThanInit && isNewerThanLastProcessed;
+        });
+        
+        if (recentScans.length > 0) {
+          console.log('📡 Computer: Received new cross-device scans:', recentScans);
+          
+          // Process each recent scan through unified validation
+          for (const scan of recentScans) {
             await handleNewScan({
               barcode: scan.barcode,
               timestamp: scan.timestamp,
-              deviceType: scan.deviceType
+              deviceType: scan.deviceType || 'cross-device'
             });
           }
           
           // Update the last processed scan ID
-          const latestScan = scans[scans.length - 1];
+          const latestScan = recentScans[recentScans.length - 1];
           if (latestScan) {
             setLastProcessedScanId(latestScan.id);
           }
         }
-        // No logging when there are no new scans - keeps console clean
       }
     } catch (error) {
       // Only log errors occasionally to avoid spam
@@ -443,7 +473,9 @@ const TransactionDisplay = () => {
     console.log('🎯 Starting scan monitoring - component is initialized');
 
     const handleScanEvent = (event) => {
-      console.log('📱 Received custom event scan:', event.detail);
+      console.log('📱 ===== SCAN EVENT RECEIVED =====');
+      console.log('📱 Event detail:', event.detail);
+      console.log('📱 Calling handleNewScan...');
       handleNewScan(event.detail);
     };
 
@@ -465,49 +497,106 @@ const TransactionDisplay = () => {
       
       try {
         const scanData = JSON.parse(latestScan);
-        const scanKey = `${scanData.barcode}-${scanData.timestamp}`;
         
-        // Check if we've already processed this exact scan
-        if (processedLocalScans.has(scanKey)) {
-          console.log('⏭️ Already processed this localStorage scan:', scanKey);
+        // CRITICAL: Only process very recent scans (within last 5 seconds)
+        const scanTime = new Date(scanData.timestamp).getTime();
+        const currentTime = Date.now();
+        const scanAge = currentTime - scanTime;
+        if (scanAge > 5000) {
+          console.log('💾 Ignoring old localStorage scan (age: ' + scanAge + 'ms)');
           return;
         }
         
-        const scanTime = new Date(scanData.timestamp);
-        const timeDiff = Date.now() - scanTime.getTime();
-        const isRecentScan = timeDiff < 5000; // Only 5 seconds window for real-time
-        
         console.log('💾 New localStorage scan found:', scanData);
-        console.log('⏰ Time difference (ms):', timeDiff);
         
-        if (isRecentScan) {
-          console.log('✅ Processing new scan from localStorage');
-          
-          // Mark this scan as processed
-          setProcessedLocalScans(prev => new Set([...prev, scanKey]));
-          
-          handleNewScan(scanData);
-        } else {
-          console.log('⏭️ Skipping old scan:', { timeDiff, scanKey });
-        }
+        // Use unified validation system
+        handleNewScan(scanData);
       } catch (error) {
         console.error('❌ Error parsing scan data:', error);
       }
     };
 
-    // Check localStorage every 1 second for real-time response
-    const localStorageInterval = setInterval(checkLocalStorage, 1000);
+    // Enable localStorage polling with reduced frequency to catch phone scans
+    const localStorageInterval = setInterval(checkLocalStorage, 2000); // Check every 2 seconds
+    console.log('💾 localStorage polling ENABLED - checking every 2 seconds');
     
-    // Poll for cross-device scans every 2 seconds for real-time response
-    const crossDeviceInterval = setInterval(pollCrossDeviceScans, 2000);
+    // Track last processed backend scan to prevent duplicates
+    let lastProcessedBackendScan = null;
     
-    // Initial poll
-    pollCrossDeviceScans();
+    // Poll backend for scans since scanner is sending there directly
+    const pollBackendScans = async () => {
+      try {
+        const response = await fetch('/api/products/scans-realtime/cashier-session');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data && result.data.length > 0) {
+            const latestScan = result.data[result.data.length - 1];
+            
+            // Create unique identifier for this scan
+            const scanId = `${latestScan.barcode}-${latestScan.timestamp}`;
+            
+            // Skip if this is the same scan we processed last time
+            if (lastProcessedBackendScan === scanId) {
+              return; // Same scan, don't process again
+            }
+            
+            // Skip if we've already processed this scan before
+            if (globalProcessedScans.has(scanId)) {
+              lastProcessedBackendScan = scanId;
+              return;
+            }
+            
+            // Only process very recent scans (within last 10 seconds)
+            const scanTime = new Date(latestScan.timestamp).getTime();
+            const currentTime = Date.now();
+            const scanAge = currentTime - scanTime;
+            if (scanAge > 10000) {
+              console.log('📡 Ignoring old backend scan (age: ' + scanAge + 'ms)');
+              return;
+            }
+            
+            console.log('📡 New backend scan found:', latestScan);
+            lastProcessedBackendScan = scanId;
+            
+            // Process the new scan
+            console.log('📡 Processing backend scan:', latestScan);
+            handleNewScan({
+              barcode: latestScan.barcode,
+              timestamp: latestScan.timestamp,
+              deviceType: latestScan.deviceType || 'phone'
+            });
+          }
+        }
+      } catch (error) {
+        console.warn('📡 Backend polling failed:', error);
+      }
+    };
+
+    // Enable backend polling with proper deduplication to catch phone scans
+    const backendInterval = setInterval(pollBackendScans, 3000); // Check every 3 seconds
+    console.log('📡 Backend scan polling ENABLED - with unified deduplication');
+
+    // Keep original cross-device polling disabled
+    let crossDeviceInterval = null;
+    if (ENABLE_CROSS_DEVICE_POLLING) {
+      crossDeviceInterval = setInterval(pollCrossDeviceScans, 2000);
+      pollCrossDeviceScans();
+      console.log('📡 Cross-device polling ENABLED');
+    } else {
+      console.log('📡 Cross-device polling DISABLED - preventing auto-scans');
+    }
 
     return () => {
       window.removeEventListener('newBarcodeScan', handleScanEvent);
-      clearInterval(localStorageInterval);
-      clearInterval(crossDeviceInterval);
+      if (localStorageInterval) {
+        clearInterval(localStorageInterval);
+      }
+      if (backendInterval) {
+        clearInterval(backendInterval);
+      }
+      if (crossDeviceInterval) {
+        clearInterval(crossDeviceInterval);
+      }
     };
   }, [isInitialized]);
 
@@ -736,15 +825,13 @@ const TransactionDisplay = () => {
                 <th>Product</th>
                 <th>Price</th>
                 <th>Quantity</th>
-                <th>Actions</th>
+                <th style={{display: 'none'}}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {scannedItems.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="empty-cart-row">
-                    Cart is empty. Scan or search for products to add them.
-                  </td>
+              
                 </tr>
               ) : (
                 scannedItems.map((item) => (
@@ -949,6 +1036,8 @@ const TransactionDisplay = () => {
         <Receipt
           items={receiptItems}
           total={receiptTotal}
+          paymentAmount={parseFloat(paymentAmount) || 0}
+          changeAmount={changeAmount}
           onClose={handleReceiptClose}
           onPrint={handleReceiptPrint}
         />
