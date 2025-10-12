@@ -16,6 +16,7 @@ const PhoneScanner = () => {
   const scannerRef = useRef(null);
   const lastScanTimeRef = useRef(0);
   const lastScannedCodeRef = useRef('');
+  const isProcessingScanRef = useRef(false);
   const scannerId = 'phone-scanner-container';
   
   // Debounce settings
@@ -80,6 +81,8 @@ const PhoneScanner = () => {
       console.log('📱 Scanner state set to stopped');
     }
     
+    isProcessingScanRef.current = false;
+    
     console.log('📱 ===== SCANNER COMPLETELY STOPPED =====');
   };
 
@@ -123,15 +126,21 @@ const PhoneScanner = () => {
       }
     };
 
-    const html5QrCode = new Html5Qrcode(scannerId);
     scannerRef.current = html5QrCode;
 
     const onScanSuccess = async (decodedText) => {
       console.log('📱 ===== ON SCAN SUCCESS CALLED =====');
       console.log('📱 Barcode detected:', decodedText);
-      
+
+      if (isProcessingScanRef.current) {
+        console.log('📱 Scan ignored - already processing previous barcode');
+        return;
+      }
+      isProcessingScanRef.current = true;
+
       if (!mountedRef.current) {
         console.log('📱 Component not mounted, returning');
+        isProcessingScanRef.current = false;
         return;
       }
 
@@ -142,6 +151,7 @@ const PhoneScanner = () => {
       // Prevent duplicate scans of the same code within debounce time
       if (lastScannedCodeRef.current === decodedText && timeSinceLastScan < SCAN_DEBOUNCE_TIME) {
         console.log('📱 Duplicate scan ignored (debounce):', decodedText);
+        isProcessingScanRef.current = false;
         return;
       }
       
@@ -168,8 +178,6 @@ const PhoneScanner = () => {
           setScanMessage('⚠️ Unknown product – not added');
           setError('');
           setScannedProduct(null);
-          setScannerStopped(false);
-          await startScanner(true);
           return;
         }
 
@@ -183,6 +191,9 @@ const PhoneScanner = () => {
       } catch (err) {
         console.error('📱 Error in scan processing:', err);
         setError('Failed to send scan data');
+      } finally {
+        await restartScannerAfterProcessing();
+        isProcessingScanRef.current = false;
       }
     };
 
@@ -219,6 +230,7 @@ const PhoneScanner = () => {
       setIsScanning(true);
       setScanMessage('📱 Scanner ready - aim at next barcode');
       setScannerStopped(false);
+      isProcessingScanRef.current = false;
 
     } catch (error) {
       if (mountedRef.current) {
@@ -318,6 +330,19 @@ const PhoneScanner = () => {
     }
   };
 
+  const restartScannerAfterProcessing = async () => {
+    try {
+      setScannerStopped(false);
+      await startScanner(true);
+    } catch (error) {
+      console.error('📱 Failed to restart scanner after processing:', error);
+      if (mountedRef.current) {
+        setError('Failed to restart scanner');
+        setScanMessage('📱 Tap to start scanning');
+      }
+    }
+  };
+
   const toggleScanner = async () => {
     if (isScanning) {
       await stopScanner();
@@ -331,20 +356,10 @@ const PhoneScanner = () => {
     }
   };
 
-  const handleModalClose = async () => {
+  const handleModalClose = () => {
     setShowSuccessModal(false);
     setScannedProduct(null);
-
-    // Restart scanner immediately for next item
-    setScannerStopped(false);
-    try {
-      await startScanner(true);
-    } catch (error) {
-      console.error('📱 Failed to restart scanner from modal:', error);
-      if (mountedRef.current) {
-        setError('Failed to restart scanner');
-      }
-    }
+    setScanMessage('📱 Scanner ready - aim at next barcode');
   };
 
   return (

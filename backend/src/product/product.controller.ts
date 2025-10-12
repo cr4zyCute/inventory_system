@@ -291,8 +291,16 @@ export class ProductController {
         message: 'Product deleted successfully',
       };
     } catch (error) {
-      if (error.code === 'P2025') {
-        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+        }
+        if (error.code === 'P2003') {
+          throw new HttpException(
+            'Cannot delete product because it is referenced by existing transactions. Deactivate it or remove related records first.',
+            HttpStatus.CONFLICT,
+          );
+        }
       }
       throw new HttpException(
         'Failed to delete product',
