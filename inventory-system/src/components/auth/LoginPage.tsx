@@ -3,7 +3,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import type { LoginCredentials } from '../../types/auth';
 import './LoginPage.css';
 
-export function LoginPage() {
+interface LoginPageProps {
+  onSwitchToRegister?: () => void;
+}
+
+export function LoginPage({ onSwitchToRegister }: LoginPageProps = {}) {
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: ''
@@ -88,6 +92,22 @@ export function LoginPage() {
           >
             {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
+
+          {onSwitchToRegister && (
+            <div className="register-link">
+              <p>
+                Don't have an account?{' '}
+                <button
+                  type="button"
+                  onClick={onSwitchToRegister}
+                  className="link-button"
+                  disabled={isLoading}
+                >
+                  Create Account
+                </button>
+              </p>
+            </div>
+          )}
         </form>
 
       </div>

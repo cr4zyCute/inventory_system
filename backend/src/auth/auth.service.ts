@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
+
+interface RegisterData {
+  email: string;
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+}
 
 @Injectable()
 export class AuthService {
@@ -38,6 +47,29 @@ export class AuthService {
     } catch (error) {
       console.error('Error updating last login:', error);
       // Don't throw error for last login update failure
+    }
+  }
+
+  async register(data: RegisterData): Promise<User> {
+    try {
+      // In production, you should hash the password
+      // For now, storing as plain text to match existing setup
+      const user = await this.prisma.user.create({
+        data: {
+          email: data.email,
+          username: data.username,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: data.role,
+          isActive: true,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      console.error('Error registering user:', error);
+      throw error;
     }
   }
 }

@@ -660,12 +660,12 @@ const DashboardAnalytics: React.FC = () => {
         >
           <i className="bi-boxes"></i> Inventory Analytics
         </button>
-        <button 
+        {/* <button 
           className={`nav-btn ${activeChart === 'user-activity' ? 'active' : ''}`}
           onClick={() => setActiveChart('user-activity')}
         >
           <i className="bi-people"></i> User Activity
-        </button>
+        </button> */}
       </div>
 
       {/* Charts Section */}

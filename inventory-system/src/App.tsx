@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { QueryProvider } from './providers/QueryProvider'
-import { LoginPage } from './components/auth'
+import { LoginPage, RegisterPage } from './components/auth'
 import { AdminDashboard } from './components/admin'
 import { ManagerDashboard } from './components/manager'
 import { CashierPage } from './components/cashier'
@@ -8,6 +9,7 @@ import './App.css'
 
 function AppContent() {
   const { isAuthenticated, user, isLoading } = useAuth()
+  const [showRegister, setShowRegister] = useState(false)
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -22,7 +24,10 @@ function AppContent() {
   }
 
   if (!isAuthenticated) {
-    return <LoginPage />
+    if (showRegister) {
+      return <RegisterPage onBackToLogin={() => setShowRegister(false)} />
+    }
+    return <LoginPage onSwitchToRegister={() => setShowRegister(true)} />
   }
 
   // Route to appropriate dashboard based on user role

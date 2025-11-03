@@ -363,45 +363,7 @@ const UserActivity: React.FC = () => {
               </div>
 
               {/* Box 4: Top Performers Bar Chart */}
-              <div className="grid-box chart-box">
-                <h3 className="box-title">
-                  <i className="bi bi-bar-chart"></i>
-                  Top Performers
-                </h3>
-                <div className="chart-wrapper">
-                  <Bar
-                    data={{
-                      labels: activityData.topPerformers.slice(0, 5).map(item => item.name.split(' ')[0]),
-                      datasets: [
-                        {
-                          label: 'Transactions',
-                          data: activityData.topPerformers.slice(0, 5).map(item => item.transactionCount),
-                          backgroundColor: '#000000',
-                          borderColor: '#000000',
-                          borderWidth: 1,
-                        }
-                      ]
-                    }}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          display: false,
-                        },
-                        title: {
-                          display: false,
-                        },
-                      },
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                        },
-                      },
-                    }}
-                  />
-                </div>
-              </div>
+         
             </div>
 
             {/* Additional Activity Details */}

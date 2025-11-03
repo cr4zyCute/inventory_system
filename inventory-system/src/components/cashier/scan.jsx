@@ -100,13 +100,15 @@ const PhoneScanner = () => {
     }
 
     
-    setError('');
-
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     if (!mountedRef.current) return;
 
     console.log('📱 Initializing Html5Qrcode instance with container:', scannerId);
+
+    // Create the Html5Qrcode instance
+    const html5QrCode = new Html5Qrcode(scannerId);
+    scannerRef.current = html5QrCode;
 
     const config = {
       fps: 10,
@@ -125,8 +127,6 @@ const PhoneScanner = () => {
         useBarCodeDetectorIfSupported: true
       }
     };
-
-    scannerRef.current = html5QrCode;
 
     const onScanSuccess = async (decodedText) => {
       console.log('📱 ===== ON SCAN SUCCESS CALLED =====');

@@ -443,27 +443,7 @@ const TransactionHistory: React.FC = () => {
 
       <div className="controls-container">
 
-        
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value as TransactionStatus)}
-          className="filter-select"
-        >
-          <option value="All">All Status</option>
-          <option value="Completed">Completed</option>
-          <option value="Refunded">Refunded</option>
-          <option value="Pending">Pending</option>
-        </select>
-
-        <select
-          value={filterPayment}
-          onChange={(e) => setFilterPayment(e.target.value as PaymentFilter)}
-          className="filter-select"
-        >
-          <option value="All">All Payment Methods</option>
-          <option value="Cash">Cash</option>
-          <option value="Card">Card</option>
-        </select>
+   
         
         <div className="search-container">
           <i className="bi-search search-icon"></i>

@@ -12,9 +12,48 @@ export interface LoginDto {
   password: string;
 }
 
+export interface RegisterDto {
+  email: string;
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: 'ADMIN' | 'MANAGER' | 'CASHIER';
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    try {
+      const user = await this.authService.register(registerDto);
+      
+      // Return user data without password
+      const { password, ...userWithoutPassword } = user;
+      
+      return {
+        success: true,
+        data: {
+          user: userWithoutPassword,
+          message: 'Registration successful'
+        }
+      };
+    } catch (error) {
+      if (error.code === 'P2002') {
+        const field = error.meta?.target?.[0] || 'field';
+        throw new HttpException(
+          `User with this ${field} already exists`,
+          HttpStatus.CONFLICT,
+        );
+      }
+      throw new HttpException(
+        'Registration failed. Please try again.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
